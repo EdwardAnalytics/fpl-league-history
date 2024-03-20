@@ -83,25 +83,6 @@ def get_managers_information_league(team_data):
     return manager_information
 
 
-def get_manager_information_league(team_data):
-    """
-    """
-    
-    league_history = []
-    for i in team_data:
-        # Get team history for the current team ID
-        team_history = get_team_history(i['entry'])
-
-        # Add team ID to history and extend league_history
-        for item in team_history:
-            item['team_id'] = i['entry']
-            item['team_name'] = i['entry_name']
-            item['manager_name'] = i['player_name']
-        league_history += team_history
-    
-    return league_history
-
-
 def get_league_history(team_data):
     """
     """
