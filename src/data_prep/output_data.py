@@ -17,44 +17,44 @@ def get_seasons_by_positions(df,position,column_name):
     return df
 
 
-def get_season_overview(season_history_df_filtered,manager_information,team_ids):
+def get_season_overview(df,manager_information,team_ids):
     # Get max value
-    max_points_season_index = season_history_df_filtered.groupby('team_name')['total_points'].idxmax()
+    max_points_season_index = df.groupby('team_name')['total_points'].idxmax()
 
     # Create a DataFrame with both 'team' and 'ranking' columns for each group
-    max_points_season_df = season_history_df_filtered.loc[max_points_season_index, ['team_name', 'manager_name','season_name']]
+    max_points_season_df = df.loc[max_points_season_index, ['team_name', 'manager_name','season_name']]
     max_points_season_df.rename(columns={'season_name': 'max_points_season_year'}, inplace=True)
 
     # Get max value
-    min_rank_season_index = season_history_df_filtered.groupby('team_name')['rank'].idxmin()
+    min_rank_season_index = df.groupby('team_name')['rank'].idxmin()
 
     # Create a DataFrame with both 'team' and 'ranking' columns for each group
-    min_rank_season_df = season_history_df_filtered.loc[min_rank_season_index, ['team_name','manager_name', 'season_name']]
+    min_rank_season_df = df.loc[min_rank_season_index, ['team_name','manager_name', 'season_name']]
     min_rank_season_df.rename(columns={'season_name': 'min_rank_season_year'}, inplace=True)
 
     # Group by 'team' and aggregate values of 'score' column into a string
-    seasons_played = season_history_df_filtered.groupby(['team_name','manager_name'])['season_name'].apply(lambda x: ', '.join(map(str, x))).reset_index(name='seasons_played_years')
+    seasons_played = df.groupby(['team_name','manager_name'])['season_name'].apply(lambda x: ', '.join(map(str, x))).reset_index(name='seasons_played_years')
 
     seasons_first = get_seasons_by_positions(
-        df=season_history_df_filtered,
+        df=df,
         position=1,
         column_name='seasons_won_years'
         )
 
     seasons_second = get_seasons_by_positions(
-        df=season_history_df_filtered,
+        df=df,
         position=2,
         column_name='seasons_runner_up_years'
         )
 
     seasons_third = get_seasons_by_positions(
-        df=season_history_df_filtered,
+        df=df,
         position=3,
         column_name='seasons_third_years'
         )
     
     # Get aggregated stats
-    seasons_overview = season_history_df_filtered.groupby(['team_id','team_name','manager_name']).agg(
+    seasons_overview = df.groupby(['team_id','team_name','manager_name']).agg(
         seasons_won=('league_position', lambda x: (x == 1).sum()),
         seasons_runner_up=('league_position', lambda x: (x == 2).sum()),
         seasons_third=('league_position', lambda x: (x == 3).sum()),
@@ -108,14 +108,14 @@ def get_season_overview(season_history_df_filtered,manager_information,team_ids)
     return seasons_overview
 
 
-def get_current_champions(season_history_df_filtered, season_overview):
+def get_current_champions(df, season_overview):
     """
     """
-    current_champions_index = season_history_df_filtered['season_name'].idxmax()
+    current_champions_index = df['season_name'].idxmax()
 
-    current_champions_team_name = season_history_df_filtered.loc[current_champions_index, 'team_name']
-    current_champions_manager_name = season_history_df_filtered.loc[current_champions_index, 'manager_name']
-    current_champions_season_name = season_history_df_filtered.loc[current_champions_index, 'season_name']
+    current_champions_team_name = df.loc[current_champions_index, 'team_name']
+    current_champions_manager_name = df.loc[current_champions_index, 'manager_name']
+    current_champions_season_name = df.loc[current_champions_index, 'season_name']
 
     # Get title number and append "st", "nd", "rd" for "1st", "2nd", "3rd" etc.
     title_number = season_overview.loc[season_overview['team_name'] == current_champions_team_name, 'seasons_won']
@@ -127,12 +127,12 @@ def get_current_champions(season_history_df_filtered, season_overview):
     return current_champions
 
 
-def get_most_wins(season_overview):
+def get_most_wins(df):
     """
     """
-    most_seasons_won = season_overview['seasons_won'].max()
+    most_seasons_won = df['seasons_won'].max()
 
-    most_season_won_teams = season_overview.loc[season_overview['seasons_won'] == most_seasons_won, ['manager_name', 'team_name','seasons_won']].to_dict(orient='records')
+    most_season_won_teams = df.loc[df['seasons_won'] == most_seasons_won, ['manager_name', 'team_name','seasons_won']].to_dict(orient='records')
 
     most_season_won_teams_list = []
     for team in most_season_won_teams:
@@ -145,15 +145,15 @@ def get_most_wins(season_overview):
     return most_season_won_teams_str
 
 
-def get_best_rank_points(season_history_df_filtered,column):
+def get_best_rank_points(df,column):
     """
     """
     if column == 'rank':
-        best = season_history_df_filtered[column].min()
+        best = df[column].min()
     elif column == 'total_points':
-        best = season_history_df_filtered[column].max()    
+        best = df[column].max()    
 
-    best_teams = season_history_df_filtered.loc[season_history_df_filtered[column] == best, ['manager_name', 'team_name','rank','total_points','season_name']].to_dict(orient='records')
+    best_teams = df.loc[df[column] == best, ['manager_name', 'team_name','rank','total_points','season_name']].to_dict(orient='records')
 
     best_teams_list = []
     for team in best_teams:
@@ -181,12 +181,12 @@ def aggreagte_season_by_position(position,df,column_name):
     return df
 
 
-def get_seasons_by_top_three_teams(season_history_df_filtered):
+def get_seasons_by_top_three_teams(df):
     """
     """
-    champions = aggreagte_season_by_position(position=1,df=season_history_df_filtered,column_name='champions_with_count')
-    runners_up = aggreagte_season_by_position(position=2,df=season_history_df_filtered,column_name='runners_up_count')
-    third_place = aggreagte_season_by_position(position=3,df=season_history_df_filtered,column_name='third_place_with_count')
+    champions = aggreagte_season_by_position(position=1,df=df,column_name='champions_with_count')
+    runners_up = aggreagte_season_by_position(position=2,df=df,column_name='runners_up_count')
+    third_place = aggreagte_season_by_position(position=3,df=df,column_name='third_place_with_count')
 
     seasons_top_three=champions.merge(
         right=runners_up,
@@ -199,14 +199,114 @@ def get_seasons_by_top_three_teams(season_history_df_filtered):
     ).sort_values(
         by='season_name'
     )
+    rename_columns = {
+        "season_name": "Season",
+        "champions_with_count": "Champions (number of titles)",
+        "runners_up_count": "Runners-up",
+        "third_place_with_count": "Third Place"
+    }
+    seasons_top_three=seasons_top_three.rename(columns=rename_columns)
+
+    # Fill nulls
+    seasons_top_three=seasons_top_three.fillna('')
 
     return seasons_top_three
 
 
-def get_titles_won_summary(season_overview):
+def get_titles_won_summary(df):
     """
     """
-    season_overview.loc[:, 'team']  = season_overview['manager_name'] + ': ' + season_overview['team_name']
+    df.loc[:, 'team']  = df['manager_name'] + ': ' + df['team_name']
     selected_columns=['rank','team','seasons_won','seasons_runner_up','seasons_won_years']
-    season_overview = season_overview.loc[(season_overview['seasons_won'] > 0) | (season_overview['seasons_runner_up'] > 0), selected_columns]
-    return season_overview
+    df = df.loc[(df['seasons_won'] > 0) | (df['seasons_runner_up'] > 0), selected_columns]
+
+    rename_columns = {
+        "rank": "Rank",
+        "team": "Team",
+        "seasons_won": "Winners",
+        "seasons_runner_up": "Runners-up",
+        "seasons_won_years": "Winning Seasons"
+    }
+    df=df.rename(columns=rename_columns)
+
+    # Fill nulls
+    df=df.fillna('')
+    
+    return df
+
+
+def reformat_season_overview(df):
+
+    rename_columns = {
+        "manager_name": "Manager",
+        "team_name": "Team",
+        "seasons_won": "Winners",
+        "seasons_won_years": "Winning Seasons",
+        "seasons_runner_up": "Runners-up",
+        "seasons_runner_up_years": "Runner-up Seasons",
+        "seasons_third": "Third",
+        "seasons_third_years": "Third Seasons",
+        "seasons_played": "Total Seasons Played",
+        "seasons_played_years": "Seasons Played",
+        "maximum_points": "Best Points in a Season",
+        "minimum_rank": "Best Rank in a Season",
+        "name": "Favourite Team",
+        "player_region_iso_code_long": "Nationality"
+    }
+    df=df.rename(columns=rename_columns)
+
+    df['Best Points in a Season']  = df['Best Points in a Season'].map('{:,.0f}'.format) + ' (' + df['max_points_season_year'] + ')'
+    df['Best Rank in a Season']  = df['Best Rank in a Season'].map('{:,.0f}'.format) + ' (' + df['min_rank_season_year'] + ')'
+
+    #Re order columns
+    df=df[list(rename_columns.values())]
+
+    #Transpose
+    df=df.T
+
+    # Fill nulls
+    df=df.fillna('')
+
+    return df
+
+
+def reformat_season_current(df):
+
+    rename_columns = {
+        "league_position": "Pos",
+        "manager_name": "Manager",
+        "team_name": "Team",
+        "total_points": "Total Points",
+        "rank": "Overall Rank"
+    }
+    df=df.rename(columns=rename_columns)
+
+    df['Total Points']  = df['Total Points'].map('{:,.0f}'.format) 
+    df['Overall Rank']  = df['Overall Rank'].map('{:,.0f}'.format) 
+
+    #Re order columns
+    df=df[list(rename_columns.values())]
+
+    return df
+
+
+def reformat_season_history(df):
+
+    rename_columns = {
+        "season_name": "Season",
+        "league_position": "Pos",
+        "manager_name": "Manager",
+        "team_name": "Team",
+        "total_points": "Total Points",
+        "rank": "Overall Rank"
+    }
+    df=df.rename(columns=rename_columns)
+
+    df['Total Points']  = df['Total Points'].map('{:,.0f}'.format) 
+    df['Overall Rank']  = df['Overall Rank'].map('{:,.0f}'.format) 
+
+    #Re order columns
+    df=df[list(rename_columns.values())]
+
+    return df
+
