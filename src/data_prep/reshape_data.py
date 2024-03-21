@@ -44,7 +44,7 @@ def summarise_season_current(
     rename_columns = {
         "player_region_iso_code_long": "nationality",
         "summary_overall_rank": "rank",
-        "name": "favourite_team"
+        "name": "favourite_team_name"
     }
     season_current_df = season_current_df.rename(columns = rename_columns)
 
