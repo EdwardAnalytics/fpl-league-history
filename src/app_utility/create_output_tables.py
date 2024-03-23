@@ -64,6 +64,7 @@ def get_team_and_league_data(league_id):
         season_history,
         season_current_df,
         season_history_df,
+        current_gamekweek
     )
 
 
@@ -132,6 +133,7 @@ def get_team_and_league_data_filtered_summarised(
         league_summary_kpis,
         seasons_top_three_output,
         titles_won_summary_output,
+        season_overview_output,
         season_current_df_output,
         season_history_df_output,
         all_time_table_output,

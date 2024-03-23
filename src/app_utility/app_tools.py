@@ -19,3 +19,24 @@ def get_most_recent_august_start():
     august_start = august_start.year
 
     return august_start
+
+
+def remove_starting_the(text):
+    """
+    Removes the substring 'the' from the beginning of the input string, 
+    regardless of case, and returns the modified string.
+
+    Parameters
+    ----------
+    text : str
+        The input string.
+
+    Returns
+    -------
+    str
+        The modified string with 'the' removed from the beginning.
+    """
+    if text.lower().startswith("the "):
+        return text[4:].lstrip()
+    return text
+
