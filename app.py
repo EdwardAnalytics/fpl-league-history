@@ -166,7 +166,7 @@ def table_dash_format(id_header, id_table, width):
 
 
 winner_table = table_dash_format(
-    id_header="winner-data-header", id_table="winner-data", width=10
+    id_header="winner-data-header", id_table="winner-data", width=12
 )
 list_of_champions_table = table_dash_format(
     id_header="list-of-champions-header", id_table="list-of-champions", width=12
