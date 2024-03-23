@@ -1,5 +1,6 @@
 import datetime
 
+
 def get_most_recent_august_start():
     """
     This is used to get the most recent start of season year

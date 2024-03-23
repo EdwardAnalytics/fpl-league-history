@@ -3,7 +3,7 @@ import pandas as pd
 
 def filter_rehsaped_season_history(season_start_year, df):
     """ """
-    df[df["season_name"].str[:4].astype(int) >= season_start_year]
+    df = df[df["season_name"].str[:4].astype(int) >= season_start_year]
 
     return df
 
