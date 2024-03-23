@@ -18,7 +18,8 @@ style_cell_tables = {
     "fontFamily": "Arial, sans-serif",
     "paddingLeft": "10px",
     "paddingRight": "10px",
-    'whiteSpace': 'normal', 'height': 'auto'
+    "whiteSpace": "normal",
+    "height": "auto",
 }
 style_header_tables = {"fontWeight": "bold"}
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -32,7 +33,7 @@ intro = html.Div(
         dbc.Row(
             [
                 dbc.Col(
-                    width=12, children=[html.H3(children=["FPL Tool | League History"])]
+                    width=10, children=[html.H3(children=["FPL Tool | League History"])]
                 ),
                 dbc.Col(
                     width=2,
@@ -61,29 +62,26 @@ select_inputs = html.Div(
         dbc.Row(
             children=[
                 dbc.Col(
-                    width=6,
+                    width=12,
                     children=[
                         html.H6("Enter League ID"),
                         dcc.Input(
                             id="league-id",
                             type="number",
+                            placeholder="From League URL: https://fantasy.premierleague.com/leagues/XXXXXX/standings/c",
                             min=0,
-                            max=999999999,
+                            max=99999999,
                             step=1,
-                            style={"width": "90%"},
-                        ),
-                        html.Div(
-                            "This can be obtained from the league URL:",
-                            style={"font-style": "italic"},
-                        ),
-                        html.Div(
-                            "https://fantasy.premierleague.com/leagues/XXXXXX/standings/c",
-                            style={"font-style": "italic"},
+                            style={"width": "67%"},
                         ),
                     ],
-                ),
+                )
+            ]
+        ),
+        dbc.Row(
+            children=[
                 dbc.Col(
-                    width=6,
+                    width=8,
                     children=[
                         html.H6("Select League Starting Season"),
                         dcc.RangeSlider(
@@ -116,7 +114,7 @@ league_summary_table = html.Div(
         dbc.Row(
             [
                 dbc.Col(
-                    width=6,
+                    width=10,
                     children=[
                         dcc.Loading(
                             type="circle",
@@ -129,46 +127,62 @@ league_summary_table = html.Div(
     ]
 )
 
-def table_dash_format(id_header,id_table,width):
-    format_item = html.Div([dbc.Row(html.Br()),
-        dbc.Row(
-            [
-                dbc.Col(
-                    width=width,
-                    children=[
-                        dcc.Loading(
-                            style={'display': 'none'},
-                            type="circle",
-                            children=[html.H3(id=id_header)],
-                        )
-                    ],
-                ),
-            ]
 
-
-        ),
-        dbc.Row(
-            [
-                dbc.Col(
-                    width=width,
-                    children=[
-                        dcc.Loading(
-                            style={'display': 'none'},
-                            type="circle",
-                            children=[html.Div(id=id_table, children=[""])],
-                        )
-                    ],
-                ),
-            ]
-        )])
+def table_dash_format(id_header, id_table, width):
+    format_item = html.Div(
+        [
+            dbc.Row(html.Br()),
+            dbc.Row(
+                [
+                    dbc.Col(
+                        width=width,
+                        children=[
+                            dcc.Loading(
+                                style={"display": "none"},
+                                type="circle",
+                                children=[html.H3(id=id_header)],
+                            )
+                        ],
+                    ),
+                ]
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(
+                        width=width,
+                        children=[
+                            dcc.Loading(
+                                style={"display": "none"},
+                                type="circle",
+                                children=[html.Div(id=id_table, children=[""])],
+                            )
+                        ],
+                    ),
+                ]
+            ),
+        ]
+    )
     return format_item
 
-winner_table =  table_dash_format(id_header="winner-data-header",id_table="winner-data",width=10)
-list_of_champions_table =  table_dash_format(id_header="list-of-champions-header",id_table="list-of-champions",width=12)
-all_time_table =  table_dash_format(id_header="all-time-table-header",id_table="all-time-table",width=10)
-season_overview_table =  table_dash_format(id_header="season-overview-header",id_table="season-overview",width=12)
-previous_seasons_table =  table_dash_format(id_header="previous-seasons-header",id_table="previous-seasons",width=10)
-current_seasons_table =  table_dash_format(id_header="current-season-header",id_table="current-season",width=10)
+
+winner_table = table_dash_format(
+    id_header="winner-data-header", id_table="winner-data", width=10
+)
+list_of_champions_table = table_dash_format(
+    id_header="list-of-champions-header", id_table="list-of-champions", width=12
+)
+all_time_table = table_dash_format(
+    id_header="all-time-table-header", id_table="all-time-table", width=10
+)
+season_overview_table = table_dash_format(
+    id_header="season-overview-header", id_table="season-overview", width=12
+)
+previous_seasons_table = table_dash_format(
+    id_header="previous-seasons-header", id_table="previous-seasons", width=10
+)
+current_seasons_table = table_dash_format(
+    id_header="current-season-header", id_table="current-season", width=10
+)
 
 # Enclosing both intro and select_inputs within a grey box
 container = dbc.Card(
@@ -179,7 +193,19 @@ container = dbc.Card(
 )
 
 app.title = "FPL - League History"
-app.layout = dbc.Container([container, league_summary_table,winner_table,list_of_champions_table,all_time_table,season_overview_table,previous_seasons_table,current_seasons_table,html.Br()])
+app.layout = dbc.Container(
+    [
+        container,
+        league_summary_table,
+        winner_table,
+        list_of_champions_table,
+        all_time_table,
+        season_overview_table,
+        current_seasons_table,
+        previous_seasons_table,
+        html.Br(),
+    ]
+)
 
 
 @app.callback(
@@ -201,8 +227,7 @@ app.layout = dbc.Container([container, league_summary_table,winner_table,list_of
     ],
     Input(component_id="league-id", component_property="value"),
     Input(component_id="year-select", component_property="value"),
-    prevent_initial_call=True
-
+    prevent_initial_call=True,
 )
 def dash_get_team_and_league_data(league_id, season_start_year):
     """
@@ -217,7 +242,7 @@ def dash_get_team_and_league_data(league_id, season_start_year):
         season_history,
         season_current_df,
         season_history_df,
-        current_gamekweek
+        current_gamekweek,
     ) = get_team_and_league_data(league_id=league_id)
 
     (
@@ -238,8 +263,6 @@ def dash_get_team_and_league_data(league_id, season_start_year):
         season_start_year=season_start_year[0],
     )
 
-
-
     # league_summary_kpis.reset_index(inplace=True)
     league_summary_kpis.reset_index(inplace=True)
     league_summary_kpis.columns = ["", league_name]
@@ -258,7 +281,7 @@ def dash_get_team_and_league_data(league_id, season_start_year):
         style_cell=style_cell_tables,
         style_header=style_header_tables,
     )
-    
+
     seasons_top_three_output_dash_header = "List of Champions"
     seasons_top_three_output_dash = dash_table.DataTable(
         id="df",
@@ -267,9 +290,11 @@ def dash_get_team_and_league_data(league_id, season_start_year):
         style_cell=style_cell_tables,
         style_header=style_header_tables,
     )
-    
-    league_name_starting_the_removed =remove_starting_the(text=league_name)
-    all_time_table_output_dash_header = f"All-time {league_name_starting_the_removed} table"
+
+    league_name_starting_the_removed = remove_starting_the(text=league_name)
+    all_time_table_output_dash_header = (
+        f"All-time {league_name_starting_the_removed} table"
+    )
     all_time_table_output_dash = dash_table.DataTable(
         id="df",
         columns=[{"name": i, "id": i} for i in all_time_table_output.columns],
@@ -277,17 +302,19 @@ def dash_get_team_and_league_data(league_id, season_start_year):
         style_cell=style_cell_tables,
         style_header=style_header_tables,
     )
-    
-    season_history_df_output_dash_header = f"Previous {league_name_starting_the_removed} seasons"
+
+    season_history_df_output_dash_header = (
+        f"Previous {league_name_starting_the_removed} seasons"
+    )
     season_history_df_output_dash = dash_table.DataTable(
         id="df",
         columns=[{"name": i, "id": i} for i in season_history_df_output.columns],
         data=season_history_df_output.to_dict(orient="records"),
         style_cell=style_cell_tables,
         style_header=style_header_tables,
+        export_format="csv",
     )
 
-    
     season_overview_output = season_overview_output.T
     season_overview_output_dash_header = f"Team Summary Statistics"
     season_overview_output_dash = dash_table.DataTable(
@@ -301,7 +328,9 @@ def dash_get_team_and_league_data(league_id, season_start_year):
     if final_gw_finished:
         season_current_df_output_dash_header = f"Current Season (Completed)"
     else:
-        season_current_df_output_dash_header = f"Current Season (GW {current_gamekweek})"
+        season_current_df_output_dash_header = (
+            f"Current Season (GW {current_gamekweek})"
+        )
 
     season_current_df_output_dash = dash_table.DataTable(
         id="df",
@@ -310,8 +339,6 @@ def dash_get_team_and_league_data(league_id, season_start_year):
         style_cell=style_cell_tables,
         style_header=style_header_tables,
     )
-
-    
 
     return (
         league_name,
@@ -327,7 +354,7 @@ def dash_get_team_and_league_data(league_id, season_start_year):
         season_overview_output_dash_header,
         season_overview_output_dash,
         season_current_df_output_dash_header,
-        season_current_df_output_dash
+        season_current_df_output_dash,
     )
 
 

@@ -2,14 +2,46 @@ import pandas as pd
 
 
 def filter_rehsaped_season_history(season_start_year, df):
-    """ """
+    """
+    Filter the reshaped season history DataFrame based on a given start year.
+
+    Parameters
+    ----------
+    season_start_year : int
+        The start year of the seasons to include.
+    df : pandas.DataFrame
+        The reshaped season history DataFrame.
+
+    Returns
+    -------
+    df: pandas.DataFrame
+        The filtered DataFrame containing season history.
+
+    """
     df = df[df["season_name"].str[:4].astype(int) >= season_start_year]
 
     return df
 
 
 def get_seasons_by_positions(df, position, column_name):
-    """ " """
+    """
+    Get seasons won, runners-up, or third-place finish for each team.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The DataFrame containing season data.
+    position : int
+        The position to filter the data by.
+    column_name : str
+        The name of the column to store the result.
+
+    Returns
+    -------
+    df : pandas.DataFrame
+        A DataFrame containing seasons won, runners-up, or third-place finishes for each team.
+
+    """
     df = (
         df[df["league_position"] == position]
         .groupby(["team_name", "manager_name"])["season_name"]
@@ -21,6 +53,26 @@ def get_seasons_by_positions(df, position, column_name):
 
 
 def get_season_overview(df, manager_information, team_ids):
+    """
+    Generate an overview of the performance of teams across seasons.
+
+    This function aggregates various statistics for each team across seasons, including the number of times they won, were runners-up or finished third, the total number of seasons played, the maximum points achieved in a season, the minimum rank attained in a season, and more.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The DataFrame containing data about teams' performances across seasons.
+    manager_information : list
+        Information about managers for all teams in the league.
+    team_ids : pandas.DataFrame
+        DataFrame containing team IDs and corresponding team names.
+
+    Returns
+    -------
+    seasons_overview : pandas.DataFrame
+        A DataFrame summarizing the performance of teams across seasons, including aggregated statistics.
+
+    """
     # Get max value
     max_points_season_index = df.groupby("team_name")["total_points"].idxmax()
 
@@ -109,7 +161,28 @@ def get_season_overview(df, manager_information, team_ids):
 
 
 def aggreagte_season_by_position(position, df, column_name):
-    """ """
+    """
+    Aggregate seasons based on the finishing position of teams.
+
+    This function filters the DataFrame to include only the teams that finished in the specified position across seasons. It then assigns a cumulative count to each appearance of a team in that position and creates a new column with the manager's name, team name, and cumulative count.
+
+
+
+    Parameters
+    ----------
+    position : int
+        The position to filter the data by.
+    df : pandas.DataFrame
+        The DataFrame containing season data.
+    column_name : str
+        The name of the column to store the result.
+
+    Returns
+    -------
+    df : pandas.DataFrame
+        A DataFrame containing aggregated season data by position.
+
+    """
     df = df[df["league_position"] == position]
     df["Cumulative_Count"] = df.groupby("team_name").cumcount() + 1
 
@@ -127,7 +200,22 @@ def aggreagte_season_by_position(position, df, column_name):
 
 
 def get_seasons_by_top_three_teams(df):
-    """ """
+    """
+    Generate an overview of seasons focusing on the top three performing teams.
+
+    This function aggregates information about the seasons where teams finished in the top three positions (champions, runners-up, and third place). It provides a summary of the number of times each team achieved these positions across seasons.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The DataFrame containing data about teams' performances across seasons.
+
+    Returns
+    -------
+    seasons_top_three : pandas.DataFrame
+        A DataFrame summarizing the performance of top three teams across seasons.
+
+    """
     champions = aggreagte_season_by_position(
         position=1, df=df, column_name="champions_with_count"
     )
@@ -158,7 +246,22 @@ def get_seasons_by_top_three_teams(df):
 
 
 def get_titles_won_summary(df):
-    """ """
+    """
+    Generate a summary of titles won by teams.
+
+    This function filters the DataFrame to include only teams that have won titles or finished as runners-up across seasons. It provides a summary of the number of titles won, number of times finishing as runners-up, and the seasons in which these achievements occurred.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The DataFrame containing data about teams' performances across seasons.
+
+    Returns
+    -------
+    df : pandas.DataFrame
+        A DataFrame summarizing the titles won by teams.
+
+    """
     df.loc[:, "team"] = df["manager_name"] + ": " + df["team_name"]
     selected_columns = [
         "rank",
@@ -187,6 +290,22 @@ def get_titles_won_summary(df):
 
 
 def reformat_season_overview(df):
+    """
+    Reformat the season overview DataFrame.
+
+    This function renames columns, formats certain columns, and transposes the DataFrame for better presentation.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The DataFrame containing the season overview information.
+
+    Returns
+    -------
+    df : pandas.DataFrame
+        A reformatted DataFrame presenting season overview information.
+
+    """
     rename_columns = {
         "manager_name": "Manager",
         "team_name": "Team",
@@ -231,6 +350,22 @@ def reformat_season_overview(df):
 
 
 def reformat_season_history(df):
+    """
+    Reformat the season history DataFrame.
+
+    This function renames columns, formats certain columns, and reorders columns for better presentation.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The DataFrame containing the season history information.
+
+    Returns
+    -------
+    df : pandas.DataFrame
+        A reformatted DataFrame presenting season history information.
+
+    """
     rename_columns = {
         "season_name": "Season",
         "league_position": "Pos",
@@ -251,7 +386,23 @@ def reformat_season_history(df):
 
 
 def get_all_time_table(df):
-    """ """
+    """
+    Generate an all-time table summarizing performance across seasons.
+
+    This function calculates an all-time table summarising the total points, average points, total seasons played,
+    and average rank for each manager and team combination.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame containing historical performance data across seasons.
+
+    Returns
+    -------
+    all_time_table : pandas.DataFrame
+        A DataFrame representing the all-time table, including columns for Manager, Team, Total Points, Average Points,
+        Total Seasons Played, and Average Rank, sorted by Total Points in descending order.
+    """
     all_time_table = (
         df.groupby(["manager_name", "team_name"])
         .agg(

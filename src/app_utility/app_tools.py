@@ -3,7 +3,12 @@ import datetime
 
 def get_most_recent_august_start():
     """
-    This is used to get the most recent start of season year
+    Returns the most recent year in which the season starts in August.
+
+    Returns
+    -------
+    numpy.ndarray
+        The most recent year when the season starts in August.
     """
 
     # Get the current date
@@ -23,7 +28,7 @@ def get_most_recent_august_start():
 
 def remove_starting_the(text):
     """
-    Removes the substring 'the' from the beginning of the input string, 
+    Removes the substring 'the' from the beginning of the input string,
     regardless of case, and returns the modified string.
 
     Parameters
@@ -39,4 +44,3 @@ def remove_starting_the(text):
     if text.lower().startswith("the "):
         return text[4:].lstrip()
     return text
-

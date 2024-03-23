@@ -4,7 +4,28 @@ import pandas as pd
 def summarise_season_current(
     league_data, team_data, manager_information, current_season_year, team_ids
 ):
-    """ """
+    """
+    Summarise the current season's data into a DataFrame, performing joins with manager information and team IDs.
+
+    Parameters
+    ----------
+    league_data : dict
+        Data about the league.
+    team_data : list
+        Data about the teams in the league.
+    manager_information : list
+        Information about managers for all teams in the league.
+    current_season_year : int
+        The current season year.
+    team_ids : pandas.DataFrame
+        DataFrame containing team IDs and corresponding team names.
+
+    Returns
+    -------
+    season_current_df: pandas.DataFrame
+        A DataFrame summarizing the current season's data.
+
+    """
     # Convert to DataFrame
     manager_information_df = pd.DataFrame(manager_information)
     season_current_df = pd.DataFrame.from_dict(team_data)
@@ -56,7 +77,24 @@ def summarise_season_current(
 
 
 def summarise_season_history(season_history, season_current_df, final_gw_finished):
-    """ """
+    """
+    Summarize the historical season data into a DataFrame, ranking the seasons and appending the current season if finished.
+
+    Parameters
+    ----------
+    season_history : dict
+        Data about previous seasons.
+    season_current_df : pandas.DataFrame
+        Data about the current season.
+    final_gw_finished : bool
+        Indicates whether the final gameweek of the current season has finished.
+
+    Returns
+    -------
+    season_history_df: pandas.DataFrame
+        A DataFrame summarizing the historical season data.
+
+    """
     # Rank current season
     season_history_df = pd.DataFrame.from_dict(season_history)
 

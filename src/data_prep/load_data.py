@@ -4,21 +4,19 @@ import requests
 
 def get_league_data(league_id):
     """
-
-    TBC
+    Get data for a specific fantasy league from the Premier League Fantasy API.
 
     Parameters
     ----------
     league_id : int
-        A mini league ID. This can be extracted from the league URL:
-        https://fantasy.premierleague.com/leagues/X/standings/c
+        The ID of the fantasy league.
 
     Returns
     -------
+    league_data : dict
+        A dictionary containing data about the league.
     team_data : list
-        There is one element in this list for each team.
-        Each element is a key value pair for the individual teams information.
-        This includes team ID, player name etc.
+        A list containing data about the teams in the league.
 
     """
 
@@ -34,7 +32,20 @@ def get_league_data(league_id):
 
 
 def get_team_history(team_id):
-    """ """
+    """
+    Get the historical data for a specific fantasy team from the Premier League Fantasy API.
+
+    Parameters
+    ----------
+    team_id : int
+        The ID of the fantasy team.
+
+    Returns
+    -------
+    team_history: list
+        A list containing historical data for the team.
+
+    """
 
     url = f"https://fantasy.premierleague.com/api/entry/{team_id}/history/"
     team_data = requests.get(url)
@@ -46,7 +57,23 @@ def get_team_history(team_id):
 
 
 def get_manager_information(team_id):
-    """ """
+    """
+    Get information about a specific fantasy team manager from the Premier League Fantasy API.
+
+    Parameters
+    ----------
+    team_id : int
+        The ID of the fantasy team.
+
+    Returns
+    -------
+    summary_overall_rank: int
+        The overall rank of the manager in the fantasy league.
+    player_region_iso_code_long: str
+        The ISO code of the region the manager is from.
+    favourite_team: str
+        The favourite Premier League team of the manager.
+    """
 
     url = f"https://fantasy.premierleague.com/api/entry/{team_id}/"
     manager_data = requests.get(url)
@@ -63,6 +90,17 @@ def get_managers_information_league(team_data):
     """
     This loops through each team id in a league and individualy gets the
     information for that team, and adds it to a list.
+
+    Parameters
+    ----------
+    team_data : list
+        A list containing data about teams in the league.
+
+    Returns
+    -------
+    list
+        A list of dictionaries containing information about each manager.
+
     """
     manager_information = []
     for team in team_data:
@@ -83,7 +121,19 @@ def get_managers_information_league(team_data):
 
 
 def get_league_history(team_data):
-    """ """
+    """
+    Get the historical data for all teams in a fantasy league from the Premier League Fantasy API.
+
+    Parameters
+    ----------
+    team_data : list
+        A list containing data about teams in the league.
+
+    Returns
+    -------
+    list
+        A list containing historical data for all teams in the league.
+    """
 
     league_history = []
     for i in team_data:

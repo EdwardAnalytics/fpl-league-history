@@ -64,7 +64,7 @@ def get_team_and_league_data(league_id):
         season_history,
         season_current_df,
         season_history_df,
-        current_gamekweek
+        current_gamekweek,
     )
 
 
