@@ -126,10 +126,14 @@ league_summary_table = html.Div(
                 ),
             ]
         ),
-        dbc.Row(html.Hr()),
+    ]
+)
+
+def table_dash_format(id_header,id_table):
+    format_item = html.Div([dbc.Row(html.Hr()),
         dbc.Row(
             [
-                dbc.Col(children=[html.H3(id="winner-data-header")]),
+                dbc.Col(children=[html.H3(id=id_header)]),
             ]
         ),
         dbc.Row(
@@ -138,16 +142,18 @@ league_summary_table = html.Div(
                     width=4,
                     children=[
                         dcc.Loading(
+                            style={'display': 'none'},
                             type="circle",
-                            children=[html.Div(id="winner-data", children=[""])],
+                            children=[html.Div(id=id_table, children=[""])],
                         )
                     ],
                 ),
             ]
-        ),
-    ]
-)
+        )])
+    return format_item
 
+winner_table =  table_dash_format(id_header="winner-data-header",id_table="winner-data")
+list_of_champions_table =  table_dash_format(id_header="list-of-champions-header",id_table="list-of-champions")
 
 # Enclosing both intro and select_inputs within a grey box
 container = dbc.Card(
@@ -158,7 +164,7 @@ container = dbc.Card(
 )
 
 app.title = "FPL - League History"
-app.layout = dbc.Container([container, league_summary_table])
+app.layout = dbc.Container([container, league_summary_table,winner_table,list_of_champions_table])
 
 
 @app.callback(
@@ -167,6 +173,8 @@ app.layout = dbc.Container([container, league_summary_table])
         Output(component_id="summary-kpis", component_property="children"),
         Output(component_id="winner-data-header", component_property="children"),
         Output(component_id="winner-data", component_property="children"),
+        Output(component_id="list-of-champions-header", component_property="children"),
+        Output(component_id="list-of-champions", component_property="children"),
     ],
     Input(component_id="league-id", component_property="value"),
     Input(component_id="year-select", component_property="value"),
@@ -203,17 +211,10 @@ def dash_get_team_and_league_data(league_id, season_start_year):
         season_start_year=season_start_year[0],
     )
 
-    league_summary_kpis.reset_index(inplace=True)
-    league_summary_kpis.columns = ["", league_name]
-    league_summary_kpis_dash = dash_table.DataTable(
-        id="df",
-        columns=[{"name": i, "id": i} for i in league_summary_kpis.columns],
-        data=league_summary_kpis.to_dict(orient="records"),
-        style_cell=style_cell_tables,
-        style_header=style_header_tables,
-    )
+
 
     # league_summary_kpis.reset_index(inplace=True)
+    league_summary_kpis.reset_index(inplace=True)
     league_summary_kpis.columns = ["", league_name]
     league_summary_kpis_dash = dash_table.DataTable(
         id="df",
@@ -230,14 +231,25 @@ def dash_get_team_and_league_data(league_id, season_start_year):
         style_cell=style_cell_tables,
         style_header=style_header_tables,
     )
+    
+    seasons_top_three_output_dash_header = "List of Champions"
+    seasons_top_three_output_dash = dash_table.DataTable(
+        id="df",
+        columns=[{"name": i, "id": i} for i in seasons_top_three_output.columns],
+        data=seasons_top_three_output.to_dict(orient="records"),
+        style_cell=style_cell_tables,
+        style_header=style_header_tables,
+    )
 
-    titles_won_summary_output
+    
 
     return (
         league_name,
         league_summary_kpis_dash,
         titles_won_summary_output_dash_header,
         titles_won_summary_output_dash,
+        seasons_top_three_output_dash_header,
+        seasons_top_three_output_dash
     )
 
 
