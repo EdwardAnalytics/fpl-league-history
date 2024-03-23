@@ -12,7 +12,14 @@ from src.app_utility.create_output_tables import (
     get_team_and_league_data_filtered_summarised,
 )
 
+# Initialize the Dash app
 external_stylesheets = [dbc.themes.BOOTSTRAP]
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
+# Set the title of the app
+app.title = "FPL - League History"
+
+# Global styles for tables
 style_cell_tables = {
     "textAlign": "center",
     "fontFamily": "Arial, sans-serif",
@@ -22,12 +29,11 @@ style_cell_tables = {
     "height": "auto",
 }
 style_header_tables = {"fontWeight": "bold"}
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 # Pre Processing
 latest_season_start = get_most_recent_august_start()
 
-
+# Define app layout components
 intro = html.Div(
     [
         dbc.Row(
@@ -104,31 +110,28 @@ select_inputs = html.Div(
     ]
 )
 
-league_summary_table = html.Div(
-    [
-        dbc.Row(
-            [
-                dbc.Col(children=[html.H3(id="league-name")]),
-            ]
-        ),
-        dbc.Row(
-            [
-                dbc.Col(
-                    width=10,
-                    children=[
-                        dcc.Loading(
-                            type="circle",
-                            children=[html.Div(id="summary-kpis", children=[""])],
-                        )
-                    ],
-                ),
-            ]
-        ),
-    ]
-)
 
+# Define table formatting function
+def table_dash_format(id_header, id_table, width, style_table={"display": "none"}):
+    """
+    Generates a formatted HTML Div element containing rows and columns for displaying tables with optional styles.
 
-def table_dash_format(id_header, id_table, width):
+    Parameters:
+    -----------
+    id_header : str
+        The ID for the header element.
+    id_table : str
+        The ID for the table element.
+    width : int
+        The width of the columns.
+    style_table : dict, optional
+        Dictionary containing CSS styles for the table, default is {"display": "none"}.
+
+    Returns:
+    --------
+    format_item : html.Div
+        The formatted HTML Div element containing rows and columns for displaying tables.
+    """
     format_item = html.Div(
         [
             dbc.Row(html.Br()),
@@ -152,7 +155,7 @@ def table_dash_format(id_header, id_table, width):
                         width=width,
                         children=[
                             dcc.Loading(
-                                style={"display": "none"},
+                                style=style_table,
                                 type="circle",
                                 children=[html.Div(id=id_table, children=[""])],
                             )
@@ -165,23 +168,44 @@ def table_dash_format(id_header, id_table, width):
     return format_item
 
 
+league_summary_table = table_dash_format(
+    id_header="league-name", id_table="summary-kpis", width=10, style_table={}
+)
 winner_table = table_dash_format(
-    id_header="winner-data-header", id_table="winner-data", width=12
+    id_header="winner-data-header",
+    id_table="winner-data",
+    width=12,
+    style_table={"display": "none"},
 )
 list_of_champions_table = table_dash_format(
-    id_header="list-of-champions-header", id_table="list-of-champions", width=12
+    id_header="list-of-champions-header",
+    id_table="list-of-champions",
+    width=12,
+    style_table={"display": "none"},
 )
 all_time_table = table_dash_format(
-    id_header="all-time-table-header", id_table="all-time-table", width=10
+    id_header="all-time-table-header",
+    id_table="all-time-table",
+    width=10,
+    style_table={"display": "none"},
 )
 season_overview_table = table_dash_format(
-    id_header="season-overview-header", id_table="season-overview", width=12
+    id_header="season-overview-header",
+    id_table="season-overview",
+    width=12,
+    style_table={"display": "none"},
 )
 previous_seasons_table = table_dash_format(
-    id_header="previous-seasons-header", id_table="previous-seasons", width=10
+    id_header="previous-seasons-header",
+    id_table="previous-seasons",
+    width=10,
+    style_table={"display": "none"},
 )
 current_seasons_table = table_dash_format(
-    id_header="current-season-header", id_table="current-season", width=10
+    id_header="current-season-header",
+    id_table="current-season",
+    width=10,
+    style_table={"display": "none"},
 )
 
 # Enclosing both intro and select_inputs within a grey box
@@ -192,7 +216,7 @@ container = dbc.Card(
     style={"background-color": "#f8f9fa", "padding": "20px", "margin": "20px"},
 )
 
-app.title = "FPL - League History"
+# Define app layout
 app.layout = dbc.Container(
     [
         container,
@@ -231,7 +255,45 @@ app.layout = dbc.Container(
 )
 def dash_get_team_and_league_data(league_id, season_start_year):
     """
-    This takes the league_id as the dashboard input and returns the data for the league
+    This function retrieves various data elements related to a specific league for display on a dashboard.
+
+    Parameters:
+    -----------
+    league_id : int
+        The ID of the league.
+    season_start_year : int
+        The starting year of the season.
+
+    Returns:
+    --------
+    league_name : str
+        The name of the league.
+    league_summary_kpis_dash : dash_table.DataTable
+        DataTable containing summary key performance indicators (KPIs) for the league.
+    titles_won_summary_output_dash_header : str
+        Header for the titles won summary output table.
+    titles_won_summary_output_dash : dash_table.DataTable
+        DataTable containing information about titles won by the league participants.
+    seasons_top_three_output_dash_header : str
+        Header for the seasons top three output table.
+    seasons_top_three_output_dash : dash_table.DataTable
+        DataTable containing information about the top three participants in each season.
+    all_time_table_output_dash_header : str
+        Header for the all-time league table output table.
+    all_time_table_output_dash : dash_table.DataTable
+        DataTable containing the all-time league table.
+    season_history_df_output_dash_header : str
+        Header for the season history output table.
+    season_history_df_output_dash : dash_table.DataTable
+        DataTable containing information about previous seasons of the league.
+    season_overview_output_dash_header : str
+        Header for the season overview output table.
+    season_overview_output_dash : dash_table.DataTable
+        DataTable containing summary statistics for each team across seasons.
+    season_current_df_output_dash_header : str
+        Header for the current season output table.
+    season_current_df_output_dash : dash_table.DataTable
+        DataTable containing information about the current season of the league.
     """
 
     (
