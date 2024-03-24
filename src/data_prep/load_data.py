@@ -28,6 +28,10 @@ def get_league_data(league_id):
 
     team_data = league_data["standings"]["results"]
 
+    # Update to use parameters.yaml
+    if len(team_data) > 150:
+        raise ValueError("Number of teams cannot exceed 150")
+
     return league_data, team_data
 
 
