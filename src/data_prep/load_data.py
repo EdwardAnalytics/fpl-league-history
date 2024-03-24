@@ -30,6 +30,10 @@ def get_league_data(league_id):
 
     while league_data["standings"]["has_next"] == True:
         page += 1
+        print(page)
+
+        if page % 5 == 0:
+            time.sleep(2)
 
         url = f"https://fantasy.premierleague.com/api/leagues-classic/{league_id}/standings/?page_standings={page}"
 
