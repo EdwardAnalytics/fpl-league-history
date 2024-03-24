@@ -241,7 +241,7 @@ container = dbc.Card(
     [
         dbc.CardBody([intro, select_inputs]),
     ],
-    style={"background-color": "#f8f9fa", "margin": "20px", "max-width": "700px"},
+    style={"background-color": "#f8f9fa", "margin": "10px", "max-width": "700px"},
 )
 
 app.layout = html.Div(
@@ -257,7 +257,7 @@ app.layout = html.Div(
         html.Br(),
     ],
     style={
-        "margin": "50px",
+        "margin": "45px",
         "max-width": "1280px",
     },
 )
@@ -336,6 +336,7 @@ def dash_get_team_and_league_data(league_id, season_start_year):
         season_current_df,
         season_history_df,
         current_gamekweek,
+        team_data,
     ) = get_team_and_league_data(league_id=league_id)
 
     (
@@ -354,6 +355,7 @@ def dash_get_team_and_league_data(league_id, season_start_year):
         season_current_df=season_current_df,
         season_history_df=season_history_df,
         season_start_year=season_start_year[0],
+        team_data=team_data,
     )
 
     # league_summary_kpis.reset_index(inplace=True)

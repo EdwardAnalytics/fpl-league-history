@@ -65,6 +65,7 @@ def get_team_and_league_data(league_id):
         season_current_df,
         season_history_df,
         current_gamekweek,
+        team_data,
     )
 
 
@@ -75,6 +76,7 @@ def get_team_and_league_data_filtered_summarised(
     season_current_df,
     season_history_df,
     season_start_year,
+    team_data,
 ):
     season_history_df_filtered = filter_rehsaped_season_history(
         season_start_year=season_start_year, df=season_history_df
@@ -95,7 +97,7 @@ def get_team_and_league_data_filtered_summarised(
     best_points_teams_str_output = get_best_rank_points(
         df=season_history_df_filtered, column="total_points"
     )
-    number_of_teams_league = get_number_of_teams_league(league_data=league_data)
+    number_of_teams_league = get_number_of_teams_league(team_data=team_data)
     first_Season_year_data = get_first_Season_year_data(df=season_history_df_filtered)
 
     league_name = get_league_name(league_data=league_data)
@@ -116,17 +118,6 @@ def get_team_and_league_data_filtered_summarised(
     season_current_df_output = reformat_season_current(df=season_current_df)
     season_history_df_output = reformat_season_history(df=season_history_df_filtered)
     all_time_table_output = get_all_time_table(df=season_history_df_filtered)
-
-    # team_and_league_data_filtered_summarised = {
-    #     "league_name": league_name,
-    #     "league_summary_kpis": league_summary_kpis.to_json(),
-    #     "seasons_top_three_output": seasons_top_three_output.to_json(),
-    #     "titles_won_summary_output": titles_won_summary_output.to_json(),
-    #     "season_overview_output": season_overview_output.to_json(),
-    #     "season_current_df_output": season_current_df_output.to_json(),
-    #     "season_history_df_output": season_history_df_output.to_json(),
-    #     "all_time_table_output": all_time_table_output.to_json()
-    # }
 
     return (
         league_name,

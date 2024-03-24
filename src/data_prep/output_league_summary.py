@@ -121,7 +121,7 @@ def get_best_rank_points(df, column):
 
 
 # Get number of teams in league
-def get_number_of_teams_league(league_data):
+def get_number_of_teams_league(team_data):
     """
     Retrieve the number of teams in the league.
 
@@ -129,15 +129,15 @@ def get_number_of_teams_league(league_data):
 
     Parameters
     ----------
-    league_data : dict
-        Dictionary containing data about the league.
+    team_data : list
+        List containing data about the league.
 
     Returns
     -------
     number_of_teams_league : int
         The number of teams in the league.
     """
-    number_of_teams_league = len(league_data["standings"]["results"])
+    number_of_teams_league = len(team_data)
     return number_of_teams_league
 
 

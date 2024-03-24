@@ -19,18 +19,26 @@ def get_league_data(league_id):
         A list containing data about the teams in the league.
 
     """
+    # Loop through each page
+    page = 1
+    url = f"https://fantasy.premierleague.com/api/leagues-classic/{league_id}/standings/?page_standings={page}"
 
-    url = (
-        f"https://fantasy.premierleague.com/api/leagues-classic/{league_id}/standings/"
-    )
     league_data = requests.get(url)
     league_data = league_data.json()
 
     team_data = league_data["standings"]["results"]
 
-    # Update to use parameters.yaml
-    if len(team_data) > 150:
-        raise ValueError("Number of teams cannot exceed 150")
+    while league_data["standings"]["has_next"] == True:
+        page += 1
+
+        url = f"https://fantasy.premierleague.com/api/leagues-classic/{league_id}/standings/?page_standings={page}"
+
+        league_data = requests.get(url)
+        league_data = league_data.json()
+
+        team_data_stage = league_data["standings"]["results"]
+
+        team_data.extend(team_data_stage)
 
     return league_data, team_data
 
