@@ -461,4 +461,4 @@ def dash_get_team_and_league_data(league_id, season_start_year):
 
 if __name__ == "__main__":
     #app.run_server(debug=False)
-    app.run_server(debug=False, host='0.0.0.0'
+    app.run_server(debug=False, host='0.0.0.0')
