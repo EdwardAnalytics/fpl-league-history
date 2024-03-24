@@ -97,7 +97,7 @@ def get_manager_information(team_id):
 
     return summary_overall_rank, player_region_iso_code_long, favourite_team
 
-
+import time
 def get_managers_information_league(team_data):
     """
     This loops through each team id in a league and individualy gets the
@@ -114,8 +114,12 @@ def get_managers_information_league(team_data):
         A list of dictionaries containing information about each manager.
 
     """
+    counter=1
     manager_information = []
     for team in team_data:
+        counter+=1
+        if counter % 20 == 0:
+            time.sleep(2)  
         entry = team["entry"]
         (summary_overall_rank, player_region_iso_code_long, favourite_team) = (
             get_manager_information(entry)
