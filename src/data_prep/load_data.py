@@ -118,7 +118,7 @@ def get_managers_information_league(team_data):
     manager_information = []
     for team in team_data:
         counter+=1
-        if counter % 20 == 0:
+        if counter % 50 == 0:
             time.sleep(2)  
         entry = team["entry"]
         (summary_overall_rank, player_region_iso_code_long, favourite_team) = (
