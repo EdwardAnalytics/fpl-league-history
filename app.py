@@ -38,11 +38,9 @@ intro = html.Div(
     [
         dbc.Row(
             [
+                dbc.Col(width=8, children=[html.H3(children=["FPL League History"])]),
                 dbc.Col(
-                    width=10, children=[html.H3(children=["FPL Tool | League History"])]
-                ),
-                dbc.Col(
-                    width=2,
+                    width=4,
                     children=[
                         html.Div(
                             children=[
@@ -78,7 +76,7 @@ select_inputs = html.Div(
                             min=0,
                             max=99999999,
                             step=1,
-                            style={"width": "67%"},
+                            style={"width": "100%"},
                         ),
                     ],
                 )
@@ -87,7 +85,7 @@ select_inputs = html.Div(
         dbc.Row(
             children=[
                 dbc.Col(
-                    width=8,
+                    width=12,
                     children=[
                         html.H6("Select League Starting Season"),
                         dcc.RangeSlider(
@@ -112,7 +110,9 @@ select_inputs = html.Div(
 
 
 # Define table formatting function
-def table_dash_format(id_header, id_table, width, style_table={"display": "none"}):
+def table_dash_format(
+    id_header, id_table, width, style_table, max_width_table, min_width_table
+):
     """
     Generates a formatted HTML Div element containing rows and columns for displaying tables with optional styles.
 
@@ -143,7 +143,9 @@ def table_dash_format(id_header, id_table, width, style_table={"display": "none"
                             dcc.Loading(
                                 style={"display": "none"},
                                 type="circle",
-                                children=[html.H3(id=id_header)],
+                                children=[
+                                    html.H4(id=id_header, style={"min-width": "400px"})
+                                ],
                             )
                         ],
                     ),
@@ -157,7 +159,16 @@ def table_dash_format(id_header, id_table, width, style_table={"display": "none"
                             dcc.Loading(
                                 style=style_table,
                                 type="circle",
-                                children=[html.Div(id=id_table, children=[""])],
+                                children=[
+                                    html.Div(
+                                        id=id_table,
+                                        children=[""],
+                                        style={
+                                            "max-width": max_width_table,
+                                            "min-width": min_width_table,
+                                        },
+                                    )
+                                ],
                             )
                         ],
                     ),
@@ -169,43 +180,60 @@ def table_dash_format(id_header, id_table, width, style_table={"display": "none"
 
 
 league_summary_table = table_dash_format(
-    id_header="league-name", id_table="summary-kpis", width=10, style_table={}
+    id_header="league-name",
+    id_table="summary-kpis",
+    width=10,
+    style_table={},
+    max_width_table="800px",
+    min_width_table="800px",
 )
 winner_table = table_dash_format(
     id_header="winner-data-header",
     id_table="winner-data",
     width=12,
     style_table={"display": "none"},
+    max_width_table="1280px",
+    min_width_table="1000px",
 )
 list_of_champions_table = table_dash_format(
     id_header="list-of-champions-header",
     id_table="list-of-champions",
     width=12,
     style_table={"display": "none"},
+    max_width_table="1280px",
+    min_width_table="1000px",
 )
 all_time_table = table_dash_format(
     id_header="all-time-table-header",
     id_table="all-time-table",
     width=10,
     style_table={"display": "none"},
+    max_width_table="1280px",
+    min_width_table="1000px",
 )
 season_overview_table = table_dash_format(
     id_header="season-overview-header",
     id_table="season-overview",
     width=12,
     style_table={"display": "none"},
+    max_width_table="1280px",
+    min_width_table="1280px",
 )
 previous_seasons_table = table_dash_format(
     id_header="previous-seasons-header",
     id_table="previous-seasons",
     width=10,
     style_table={"display": "none"},
+    max_width_table="1280px",
+    min_width_table="1000px",
 )
 current_seasons_table = table_dash_format(
     id_header="current-season-header",
     id_table="current-season",
     width=10,
     style_table={"display": "none"},
+    max_width_table="1280px",
+    min_width_table="700px",
 )
 
 # Enclosing both intro and select_inputs within a grey box
@@ -213,12 +241,11 @@ container = dbc.Card(
     [
         dbc.CardBody([intro, select_inputs]),
     ],
-    style={"background-color": "#f8f9fa", "padding": "20px", "margin": "20px"},
+    style={"background-color": "#f8f9fa", "margin": "20px", "max-width": "700px"},
 )
 
-# Define app layout
-app.layout = dbc.Container(
-    [
+app.layout = html.Div(
+    children=[
         container,
         league_summary_table,
         winner_table,
@@ -228,7 +255,11 @@ app.layout = dbc.Container(
         current_seasons_table,
         previous_seasons_table,
         html.Br(),
-    ]
+    ],
+    style={
+        "margin": "50px",
+        "max-width": "1280px",
+    },
 )
 
 
@@ -334,6 +365,7 @@ def dash_get_team_and_league_data(league_id, season_start_year):
         data=league_summary_kpis.to_dict(orient="records"),
         style_cell=style_cell_tables,
         style_header=style_header_tables,
+        export_format="csv",
     )
     titles_won_summary_output_dash_header = "Champions"
     titles_won_summary_output_dash = dash_table.DataTable(
@@ -342,6 +374,7 @@ def dash_get_team_and_league_data(league_id, season_start_year):
         data=titles_won_summary_output.to_dict(orient="records"),
         style_cell=style_cell_tables,
         style_header=style_header_tables,
+        export_format="csv",
     )
 
     seasons_top_three_output_dash_header = "List of Champions"
@@ -351,6 +384,7 @@ def dash_get_team_and_league_data(league_id, season_start_year):
         data=seasons_top_three_output.to_dict(orient="records"),
         style_cell=style_cell_tables,
         style_header=style_header_tables,
+        export_format="csv",
     )
 
     league_name_starting_the_removed = remove_starting_the(text=league_name)
@@ -363,6 +397,7 @@ def dash_get_team_and_league_data(league_id, season_start_year):
         data=all_time_table_output.to_dict(orient="records"),
         style_cell=style_cell_tables,
         style_header=style_header_tables,
+        export_format="csv",
     )
 
     season_history_df_output_dash_header = (
@@ -385,6 +420,7 @@ def dash_get_team_and_league_data(league_id, season_start_year):
         data=season_overview_output.to_dict(orient="records"),
         style_cell=style_cell_tables,
         style_header=style_header_tables,
+        export_format="csv",
     )
 
     if final_gw_finished:
@@ -400,6 +436,7 @@ def dash_get_team_and_league_data(league_id, season_start_year):
         data=season_current_df_output.to_dict(orient="records"),
         style_cell=style_cell_tables,
         style_header=style_header_tables,
+        export_format="csv",
     )
 
     return (

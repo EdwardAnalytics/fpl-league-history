@@ -337,6 +337,12 @@ def reformat_season_overview(df):
         + ")"
     )
 
+    df["Favourite Team"] = (
+        df["Favourite Team"]
+        .replace("Spurs", "Lad's it's Tottenham")
+        .replace("Burnley", "That's the Burnley Way")
+    )
+
     # Re order columns
     df = df[list(rename_columns.values())]
 
@@ -424,6 +430,8 @@ def get_all_time_table(df):
         "Average Rank",
     ]
 
+    all_time_table = all_time_table.sort_values(by="Total Points", ascending=False)
+
     all_time_table["Total Points"] = all_time_table["Total Points"].map(
         "{:,.0f}".format
     )
@@ -433,7 +441,5 @@ def get_all_time_table(df):
     all_time_table["Average Rank"] = all_time_table["Average Rank"].map(
         "{:,.0f}".format
     )
-
-    all_time_table = all_time_table.sort_values(by="Total Points", ascending=False)
 
     return all_time_table
