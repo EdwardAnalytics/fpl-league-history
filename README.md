@@ -32,4 +32,4 @@ Navigate to local host: http://127.0.0.1:8050/.
 
 
 ## Dashboard Preview
-TBC
+![](assets/dashboard_preview.png)
