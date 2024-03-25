@@ -4,6 +4,19 @@ import pandas as pd
 
 
 def fetch_url(url):
+    """
+    Fetches data from a given URL using the requests library.
+
+    Parameters:
+    ----------
+    url : str
+        The URL to fetch data from.
+
+    Returns:
+    ----------
+    data : dict or None
+        The JSON data retrieved from the URL if the request is successful, otherwise None.
+    """
     response = requests.get(url)
     if response.ok:
         data = response.json()
@@ -14,6 +27,19 @@ def fetch_url(url):
 
 # Function to fetch URLs concurrently
 def fetch_urls_concurrently(urls):
+    """
+    Fetches multiple URLs concurrently using ThreadPoolExecutor.
+
+    Parameters:
+    ----------
+    urls : list
+        A list of URLs to fetch.
+
+    Returns:
+    ----------
+    results : list: 
+        A list containing the fetched results from the URLs.
+    """
     with concurrent.futures.ThreadPoolExecutor() as executor:
         # Submit tasks to the executor
         futures = [executor.submit(fetch_url, url) for url in urls]
@@ -28,6 +54,20 @@ def fetch_urls_concurrently(urls):
 
 
 def fetch_urls_concurrently_with_url(urls):
+    """
+    Fetches multiple URLs concurrently using ThreadPoolExecutor.
+    Returns the fetched data along with their corresponding URLs.
+
+    Parameters:
+    ----------
+    urls : list
+        A list of URLs to fetch.
+
+    Returns:
+    ----------
+    results : list
+        A list containing dictionaries with URL and fetched data.
+    """
     with concurrent.futures.ThreadPoolExecutor() as executor:
         # Submit tasks to the executor
         futures = {executor.submit(fetch_url, url): url for url in urls}
@@ -46,20 +86,17 @@ def fetch_urls_concurrently_with_url(urls):
 
 def get_league_urls(league_id):
     """
-    Get data for a specific fantasy league from the Premier League Fantasy API.
+    Retrieves URLs for fetching league standings data for a given league ID from the Fantasy Premier League API.
 
-    Parameters
+    Parameters:
     ----------
-    league_id : int
-        The ID of the fantasy league.
+    league_id :int
+        The ID of the league for which standings URLs are to be fetched.
 
-    Returns
-    -------
-    league_data : dict
-        A dictionary containing data about the league.
-    team_data : list
-        A list containing data about the teams in the league.
-
+    Returns:
+    ----------
+    urls : list
+        A list of URLs for fetching league standings data.
     """
     # Loop through each page
     urls = []
@@ -84,7 +121,21 @@ def get_league_urls(league_id):
 
 
 def get_league_data(league_id):
-    """ """
+    """
+    Retrieves league data and team data for a given league ID.
+
+    Parameters:
+    ----------
+    league_id : int
+        The ID of the league for which data is to be fetched.
+
+    Returns:
+    ----------
+    league_data : dict
+        League data retrieved from the first URL.
+    team_data : list
+        Team data extracted from all fetched URLs.
+    """
     urls = get_league_urls(league_id=league_id)
     all_results = fetch_urls_concurrently(urls=urls)
 
@@ -98,6 +149,19 @@ def get_league_data(league_id):
 
 
 def get_manager_urls(team_data):
+    """
+    Retrieves URLs for fetching manager data based on team data.
+
+    Parameters
+    ----------
+    team_data : list
+        A list of dictionaries containing team data.
+
+    Returns
+    -------
+    list
+        A list of URLs for fetching manager data.
+    """
     urls = []
     for team in team_data:
         entry = team["entry"]
@@ -107,7 +171,30 @@ def get_manager_urls(team_data):
 
 
 def get_managers_information_league(team_data):
-    """ """
+    """
+    Retrieves detailed information about managers in a league based on team data.
+
+    This function takes a list of dictionaries containing team data as input and fetches detailed information
+    about each manager associated with the teams. The function first generates URLs for fetching manager data 
+    using the provided team data. Then, it concurrently fetches data from these URLs using the 
+    fetch_urls_concurrently function. Finally, it filters and structures the retrieved data to extract 
+    relevant manager information such as entry ID, overall rank, player's region ISO code, and favourite team.
+
+    Parameters
+    ----------
+    team_data : list
+        A list of dictionaries containing team data, including information about each team in the league.
+
+    Returns
+    -------
+    manager_information : list
+        A list of dictionaries containing filtered information about each manager in the league.
+        Each dictionary contains the following keys:
+            - 'entry': The unique ID of the manager.
+            - 'summary_overall_rank': The overall rank of the manager.
+            - 'player_region_iso_code_long': The ISO code of the player's region.
+            - 'favourite_team': The favourite team of the manager.
+    """
     urls = get_manager_urls(team_data=team_data)
     all_results = fetch_urls_concurrently(urls=urls)
 
@@ -127,6 +214,19 @@ def get_managers_information_league(team_data):
 
 
 def get_team_urls(team_data):
+    """
+    Generates URLs for fetching team history data based on team data.
+
+    Parameters
+    ----------
+    team_data : list
+        A list of dictionaries containing team data.
+
+    Returns
+    -------
+    list
+        A list of URLs for fetching team history data.
+    """
     urls = []
     for team in team_data:
         entry = team["entry"]
@@ -137,7 +237,27 @@ def get_team_urls(team_data):
 
 def get_league_history(team_data):
     """
-    TBC
+    Retrieves historical data for teams in a league based on team data.
+
+    This function takes a list of dictionaries containing team data as input and fetches historical data
+    for each team in the league. It generates URLs for fetching team history data using the provided team data
+    and fetches data from these URLs concurrently. Then, it enhances each historical data entry with additional
+    information including team ID, team name, and manager name.
+
+    Parameters
+    ----------
+    team_data : list
+        A list of dictionaries containing team data, including information about each team in the league.
+
+    Returns
+    -------
+    league_history : slist
+        A list of dictionaries containing historical data for all teams in the league.
+        Each dictionary represents a historical entry and includes the following keys:
+            - 'team_id': The unique ID of the team.
+            - 'team_name': The name of the team.
+            - 'manager_name': The name of the manager.
+            - Other historical data keys provided by the Fantasy Premier League API.
     """
 
     urls = get_team_urls(team_data=team_data)
