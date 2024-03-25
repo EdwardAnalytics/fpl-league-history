@@ -37,7 +37,7 @@ def fetch_urls_concurrently(urls):
 
     Returns:
     ----------
-    results : list: 
+    results : list:
         A list containing the fetched results from the URLs.
     """
     with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -175,9 +175,9 @@ def get_managers_information_league(team_data):
     Retrieves detailed information about managers in a league based on team data.
 
     This function takes a list of dictionaries containing team data as input and fetches detailed information
-    about each manager associated with the teams. The function first generates URLs for fetching manager data 
-    using the provided team data. Then, it concurrently fetches data from these URLs using the 
-    fetch_urls_concurrently function. Finally, it filters and structures the retrieved data to extract 
+    about each manager associated with the teams. The function first generates URLs for fetching manager data
+    using the provided team data. Then, it concurrently fetches data from these URLs using the
+    fetch_urls_concurrently function. Finally, it filters and structures the retrieved data to extract
     relevant manager information such as entry ID, overall rank, player's region ISO code, and favourite team.
 
     Parameters

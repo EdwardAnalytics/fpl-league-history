@@ -108,6 +108,23 @@ select_inputs = html.Div(
     ]
 )
 
+github_link = html.I(
+    [
+        dbc.Row(
+            dbc.Col(
+                width=12,
+                style={"text-align": "right", "font-size": "smaller"},
+                children=[
+                    html.A(
+                        href="https://github.com/edward-farragher/ff-league-history",
+                        children="Link to GitHub repo.",
+                    )
+                ],
+            ),
+        )
+    ]
+)
+
 
 # Define table formatting function
 def table_dash_format(
@@ -239,7 +256,7 @@ current_seasons_table = table_dash_format(
 # Enclosing both intro and select_inputs within a grey box
 container = dbc.Card(
     [
-        dbc.CardBody([intro, select_inputs]),
+        dbc.CardBody([intro, select_inputs, github_link]),
     ],
     style={"background-color": "#f8f9fa", "margin": "10px", "max-width": "700px"},
 )
