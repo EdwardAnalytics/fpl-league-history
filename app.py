@@ -12,6 +12,14 @@ from src.app_utility.create_output_tables import (
     get_team_and_league_data_filtered_summarised,
 )
 
+from dash.long_callback import DiskcacheLongCallbackManager
+
+## Diskcache
+import diskcache
+cache = diskcache.Cache("./cache")
+long_callback_manager = DiskcacheLongCallbackManager(cache)
+
+
 # Initialize the Dash app
 external_stylesheets = [dbc.themes.BOOTSTRAP]
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -262,8 +270,8 @@ app.layout = html.Div(
     },
 )
 
-
-@app.callback(
+@app.long_callback(
+#@app.callback(
     [
         Output(component_id="league-name", component_property="children"),
         Output(component_id="summary-kpis", component_property="children"),
@@ -283,6 +291,7 @@ app.layout = html.Div(
     Input(component_id="league-id", component_property="value"),
     Input(component_id="year-select", component_property="value"),
     prevent_initial_call=True,
+    manager=long_callback_manager,
 )
 def dash_get_team_and_league_data(league_id, season_start_year):
     """
@@ -461,4 +470,4 @@ def dash_get_team_and_league_data(league_id, season_start_year):
 
 if __name__ == "__main__":
     #app.run_server(debug=False)
-    app.run_server(debug=False, host='0.0.0.0')
+    app.run_server(debug=False,host='0.0.0.0')
