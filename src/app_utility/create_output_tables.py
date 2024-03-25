@@ -44,7 +44,7 @@ def get_team_and_league_data(league_id):
     final_gw_finished, current_season_year, team_ids, current_gamekweek = (
         get_current_season_information()
     )
-    
+
     print("get_current_season_information")
 
     season_current_df = summarise_season_current(
@@ -54,7 +54,7 @@ def get_team_and_league_data(league_id):
         current_season_year=current_season_year,
         team_ids=team_ids,
     )
-    
+
     print("summarise_season_current")
 
     season_history_df = summarise_season_history(
@@ -62,7 +62,7 @@ def get_team_and_league_data(league_id):
         season_current_df=season_current_df,
         final_gw_finished=final_gw_finished,
     )
-    
+
     print("summarise_season_history")
 
     return (
@@ -90,41 +90,41 @@ def get_team_and_league_data_filtered_summarised(
     season_history_df_filtered = filter_rehsaped_season_history(
         season_start_year=season_start_year, df=season_history_df
     )
-    
+
     print("filter_rehsaped_season_history")
     season_overview = get_season_overview(
         df=season_history_df_filtered,
         manager_information=manager_information,
         team_ids=team_ids,
     )
-    
+
     print("get_season_overview")
 
     current_champions_output = get_current_champions(
         df=season_history_df_filtered, season_overview=season_overview
     )
-    
+
     print("get_current_champions")
     most_season_won_teams_str_output = get_most_wins(df=season_overview)
     best_rank_teams_str = get_best_rank_points(
         df=season_history_df_filtered, column="rank"
     )
-    
+
     print("get_most_wins")
     best_points_teams_str_output = get_best_rank_points(
         df=season_history_df_filtered, column="total_points"
     )
-    
+
     print("get_best_rank_points")
     number_of_teams_league = get_number_of_teams_league(team_data=team_data)
-    
+
     print("get_number_of_teams_league")
     first_Season_year_data = get_first_Season_year_data(df=season_history_df_filtered)
-    
+
     print("get_first_Season_year_data")
 
     league_name = get_league_name(league_data=league_data)
-    
+
     print("get_league_name")
     league_summary_kpis = get_league_summary_kpis(
         first_Season_year_data=first_Season_year_data,
@@ -134,20 +134,20 @@ def get_team_and_league_data_filtered_summarised(
         best_points_teams_str_output=best_points_teams_str_output,
         best_rank_teams_str=best_rank_teams_str,
     )
-    
+
     print("get_league_summary_kpis")
 
     seasons_top_three_output = get_seasons_by_top_three_teams(
         df=season_history_df_filtered
     )
-    
+
     print("get_seasons_by_top_three_teams")
     titles_won_summary_output = get_titles_won_summary(df=season_overview)
     season_overview_output = reformat_season_overview(df=season_overview)
     season_current_df_output = reformat_season_current(df=season_current_df)
     season_history_df_output = reformat_season_history(df=season_history_df_filtered)
     all_time_table_output = get_all_time_table(df=season_history_df_filtered)
-    
+
     print("get_all_time_table")
 
     return (

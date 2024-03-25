@@ -4,7 +4,6 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 import dash_table
 import pandas as pd
-import os
 
 
 from src.app_utility.app_tools import get_most_recent_august_start, remove_starting_the
@@ -12,21 +11,6 @@ from src.app_utility.create_output_tables import (
     get_team_and_league_data,
     get_team_and_league_data_filtered_summarised,
 )
-
-from dash import DiskcacheManager, CeleryManager, callback
-
-if 'REDIS_URL' in os.environ:
-    # Use Redis & Celery if REDIS_URL set as an env variable
-    from celery import Celery
-    celery_app = Celery(__name__, broker=os.environ['REDIS_URL'], backend=os.environ['REDIS_URL'])
-    background_callback_manager = CeleryManager(celery_app)
-
-else:
-    # Diskcache for non-production apps when developing locally
-    import diskcache
-    cache = diskcache.Cache("./cache")
-    background_callback_manager = DiskcacheManager(cache)
-
 
 # Initialize the Dash app
 external_stylesheets = [dbc.themes.BOOTSTRAP]
@@ -279,7 +263,7 @@ app.layout = html.Div(
 )
 
 
-@callback(
+@app.callback(
     [
         Output(component_id="league-name", component_property="children"),
         Output(component_id="summary-kpis", component_property="children"),
@@ -298,7 +282,6 @@ app.layout = html.Div(
     ],
     Input(component_id="league-id", component_property="value"),
     Input(component_id="year-select", component_property="value"),
-    manager=background_callback_manager,
     prevent_initial_call=True,
 )
 def dash_get_team_and_league_data(league_id, season_start_year):
@@ -477,5 +460,5 @@ def dash_get_team_and_league_data(league_id, season_start_year):
 
 
 if __name__ == "__main__":
-    #app.run_server(debug=False)
-    app.run_server(debug=False,host='0.0.0.0')
+    # app.run_server(debug=False)
+    app.run_server(debug=False, host="0.0.0.0")

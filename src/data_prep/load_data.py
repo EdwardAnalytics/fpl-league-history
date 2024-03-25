@@ -1,8 +1,50 @@
-import pandas as pd
 import requests
+import concurrent.futures
+import pandas as pd
 
 
-def get_league_data(league_id):
+def fetch_url(url):
+    response = requests.get(url)
+    if response.ok:
+        data = response.json()
+        return data
+    else:
+        return None
+
+
+# Function to fetch URLs concurrently
+def fetch_urls_concurrently(urls):
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        # Submit tasks to the executor
+        futures = [executor.submit(fetch_url, url) for url in urls]
+
+        # Retrieve results as they become available
+        results = []
+        for future in concurrent.futures.as_completed(futures):
+            result = future.result()
+            if result:
+                results.append(result)
+    return results
+
+
+def fetch_urls_concurrently_with_url(urls):
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        # Submit tasks to the executor
+        futures = {executor.submit(fetch_url, url): url for url in urls}
+
+        # Retrieve results as they become available
+        results = []
+        for future in concurrent.futures.as_completed(futures):
+            url = futures[future]
+            result = future.result()
+            if result:
+                # Append the result with its corresponding URL
+                result_with_url = {"url": url, "data": result}
+                results.append(result_with_url)
+    return results
+
+
+def get_league_urls(league_id):
     """
     Get data for a specific fantasy league from the Premier League Fantasy API.
 
@@ -20,13 +62,13 @@ def get_league_data(league_id):
 
     """
     # Loop through each page
+    urls = []
     page = 1
     url = f"https://fantasy.premierleague.com/api/leagues-classic/{league_id}/standings/?page_standings={page}"
+    urls.append(url)
 
     league_data = requests.get(url)
     league_data = league_data.json()
-
-    team_data = league_data["standings"]["results"]
 
     while league_data["standings"]["has_next"] == True:
         page += 1
@@ -36,132 +78,91 @@ def get_league_data(league_id):
         league_data = requests.get(url)
         league_data = league_data.json()
 
-        team_data_stage = league_data["standings"]["results"]
+        urls.append(url)
 
-        team_data.extend(team_data_stage)
+    return urls
 
+
+def get_league_data(league_id):
+    """ """
+    urls = get_league_urls(league_id=league_id)
+    all_results = fetch_urls_concurrently(urls=urls)
+
+    team_data = []
+    for item in all_results:
+        if "standings" in item and "results" in item["standings"]:
+            team_data.extend(item["standings"]["results"])
+
+    league_data = all_results[0]
     return league_data, team_data
 
 
-def get_team_history(team_id):
-    """
-    Get the historical data for a specific fantasy team from the Premier League Fantasy API.
-
-    Parameters
-    ----------
-    team_id : int
-        The ID of the fantasy team.
-
-    Returns
-    -------
-    team_history: list
-        A list containing historical data for the team.
-
-    """
-
-    url = f"https://fantasy.premierleague.com/api/entry/{team_id}/history/"
-    team_data = requests.get(url)
-    team_data = team_data.json()
-
-    team_history = team_data["past"]
-
-    return team_history
-
-
-def get_manager_information(team_id):
-    """
-    Get information about a specific fantasy team manager from the Premier League Fantasy API.
-
-    Parameters
-    ----------
-    team_id : int
-        The ID of the fantasy team.
-
-    Returns
-    -------
-    summary_overall_rank: int
-        The overall rank of the manager in the fantasy league.
-    player_region_iso_code_long: str
-        The ISO code of the region the manager is from.
-    favourite_team: str
-        The favourite Premier League team of the manager.
-    """
-
-    url = f"https://fantasy.premierleague.com/api/entry/{team_id}/"
-    manager_data = requests.get(url)
-    manager_data = manager_data.json()
-
-    summary_overall_rank = manager_data["summary_overall_rank"]
-    player_region_iso_code_long = manager_data["player_region_iso_code_long"]
-    favourite_team = manager_data["favourite_team"]
-
-    return summary_overall_rank, player_region_iso_code_long, favourite_team
-
-import time
-def get_managers_information_league(team_data):
-    """
-    This loops through each team id in a league and individualy gets the
-    information for that team, and adds it to a list.
-
-    Parameters
-    ----------
-    team_data : list
-        A list containing data about teams in the league.
-
-    Returns
-    -------
-    list
-        A list of dictionaries containing information about each manager.
-
-    """
-    counter=1
-    manager_information = []
+def get_manager_urls(team_data):
+    urls = []
     for team in team_data:
-        counter+=1
-        if counter % 50 == 0:
-            time.sleep(2)  
         entry = team["entry"]
-        (summary_overall_rank, player_region_iso_code_long, favourite_team) = (
-            get_manager_information(entry)
-        )
+        url = f"https://fantasy.premierleague.com/api/entry/{entry}/"
+        urls.append(url)
+    return urls
 
-        manager_information.append(
-            {
-                "entry": entry,
-                "summary_overall_rank": summary_overall_rank,
-                "player_region_iso_code_long": player_region_iso_code_long,
-                "favourite_team": favourite_team,
-            }
-        )
+
+def get_managers_information_league(team_data):
+    """ """
+    urls = get_manager_urls(team_data=team_data)
+    all_results = fetch_urls_concurrently(urls=urls)
+
+    manager_information = []
+    for dictionary in all_results:
+        filtered_dict = {
+            "entry": dictionary.get("id"),
+            "summary_overall_rank": dictionary.get("summary_overall_rank"),
+            "player_region_iso_code_long": dictionary.get(
+                "player_region_iso_code_long"
+            ),
+            "favourite_team": dictionary.get("favourite_team"),
+        }
+        manager_information.append(filtered_dict)
+
     return manager_information
+
+
+def get_team_urls(team_data):
+    urls = []
+    for team in team_data:
+        entry = team["entry"]
+        url = f"https://fantasy.premierleague.com/api/entry/{entry}/history/"
+        urls.append(url)
+    return urls
 
 
 def get_league_history(team_data):
     """
-    Get the historical data for all teams in a fantasy league from the Premier League Fantasy API.
-
-    Parameters
-    ----------
-    team_data : list
-        A list containing data about teams in the league.
-
-    Returns
-    -------
-    list
-        A list containing historical data for all teams in the league.
+    TBC
     """
 
-    league_history = []
-    for i in team_data:
-        # Get team history for the current team ID
-        team_history = get_team_history(i["entry"])
+    urls = get_team_urls(team_data=team_data)
+    all_results = fetch_urls_concurrently_with_url(urls=urls)
 
-        # Add team ID to history and extend league_history
-        for item in team_history:
-            item["team_id"] = i["entry"]
-            item["team_name"] = i["entry_name"]
-            item["manager_name"] = i["player_name"]
-        league_history += team_history
+    for result in all_results:
+        # Get the URL
+        url = result["url"]
+        # Extract team_id from URL
+        start_index = url.find("entry/") + len("entry/")
+        end_index = url.find("/history/")
+        team_id = url[start_index:end_index]
+        # Add team_id to each dictionary in the 'past' key
+        for item in result["data"]["past"]:
+            # Find the corresponding team data
+            for team in team_data:
+                if team["entry"] == int(team_id):
+                    # Add team_name and manager_name to the dictionary
+                    item["team_id"] = int(team_id)
+                    item["team_name"] = team["entry_name"]
+                    item["manager_name"] = team["player_name"]
+                    break
+
+    # Extract 'past' dictionaries into one big list
+    league_history = [item for result in all_results for item in result["data"]["past"]]
 
     return league_history
 
