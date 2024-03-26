@@ -102,20 +102,20 @@ def main():
             league_summary_kpis.columns = ["", league_name]
             # Display the output tables
             st.header(league_name, divider="grey")
-            st.table(data=league_summary_kpis, hide_index=True)
+            st.table(data=league_summary_kpis)
 
             st.subheader("Champions", divider="grey")
-            st.table(titles_won_summary_output, hide_index=True)
+            st.table(titles_won_summary_output)
 
             st.subheader("List of Champions", divider="grey")
-            st.table(seasons_top_three_output, hide_index=True)
+            st.table(seasons_top_three_output)
 
             league_name_starting_the_removed = remove_starting_the(text=league_name)
             st.subheader(f"All time {league_name_starting_the_removed}", divider="grey")
-            st.table(all_time_table_output, hide_index=True)
+            st.table(all_time_table_output)
 
             st.subheader("Team Summary Statistics", divider="grey")
-            st.table(season_overview_output.T, hide_index=True)
+            st.table(season_overview_output.T)
 
             if final_gw_finished:
                 season_current_df_output_dash_header = f"Current Season (Completed)"
@@ -125,13 +125,13 @@ def main():
                 )
 
             st.subheader(season_current_df_output_dash_header, divider="grey")
-            st.table(season_current_df_output, hide_index=True)
+            st.table(season_current_df_output)
 
             season_history_df_output_dash_header = (
                 f"Previous {league_name_starting_the_removed} seasons"
             )
             st.subheader(f"{season_history_df_output_dash_header}", divider="grey")
-            st.table(season_history_df_output, hide_index=True)
+            st.table(season_history_df_output)
 
     except Exception as e:
         st.error(
