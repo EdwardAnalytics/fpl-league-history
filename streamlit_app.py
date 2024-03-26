@@ -6,7 +6,11 @@ st.set_page_config(
 )
 
 # Import functions
-from src.app_utility.app_tools import get_most_recent_august_start, remove_starting_the
+from src.app_utility.app_tools import (
+    get_most_recent_august_start,
+    remove_starting_the,
+    generate_commentary,
+)
 from src.app_utility.create_output_tables import (
     get_team_and_league_data,
     get_team_and_league_data_filtered_summarised,
@@ -95,10 +99,20 @@ def main():
                     team_data=team_data,
                 )
 
+            number_of_teams = str(league_summary_kpis.loc["Number of teams"][0])
+            year_start = str(league_summary_kpis.loc["Founded"][0])
+
+            commentary = generate_commentary(
+                league_name=league_name,
+                number_of_teams=number_of_teams,
+                year_start=year_start,
+            )
+
             league_summary_kpis.reset_index(inplace=True)
             league_summary_kpis.columns = ["", league_name]
             # Display the output tables
             st.header(league_name, divider="grey")
+            st.write(commentary)
             st.dataframe(data=league_summary_kpis, hide_index=True)
 
             st.subheader("Champions", divider="grey")

@@ -44,3 +44,10 @@ def remove_starting_the(text):
     if text.lower().startswith("the "):
         return text[4:].lstrip()
     return text
+
+
+def generate_commentary(league_name, number_of_teams, year_start):
+    league_name = remove_starting_the(league_name)
+
+    commetnary_p1 = f"""The {league_name} is the highest level of the Fantasy English football league system. It is contested by {number_of_teams} clubs, and seasons typically run from August to May, with each team playing in 38 gameweeks. The league was founded in {year_start}."""
+    return commetnary_p1
