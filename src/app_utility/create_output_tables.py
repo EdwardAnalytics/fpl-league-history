@@ -31,8 +31,6 @@ from src.data_prep.output_league_summary import (
     get_league_summary_kpis,
 )
 
-import time
-
 
 def get_team_and_league_data(league_id):
     league_data, team_data = get_league_data(league_id=league_id)
