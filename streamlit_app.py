@@ -9,7 +9,6 @@ st.set_page_config(
 from src.app_utility.app_tools import (
     get_most_recent_august_start,
     remove_starting_the,
-    generate_commentary,
 )
 from src.app_utility.create_output_tables import (
     get_team_and_league_data,
@@ -99,34 +98,24 @@ def main():
                     team_data=team_data,
                 )
 
-            number_of_teams = str(league_summary_kpis.loc["Number of teams"][0])
-            year_start = str(league_summary_kpis.loc["Founded"][0])
-
-            commentary = generate_commentary(
-                league_name=league_name,
-                number_of_teams=number_of_teams,
-                year_start=year_start,
-            )
-
             league_summary_kpis.reset_index(inplace=True)
             league_summary_kpis.columns = ["", league_name]
             # Display the output tables
             st.header(league_name, divider="grey")
-            st.write(commentary)
-            st.dataframe(data=league_summary_kpis, hide_index=True)
+            st.table(data=league_summary_kpis, hide_index=True)
 
             st.subheader("Champions", divider="grey")
-            st.dataframe(titles_won_summary_output, hide_index=True)
+            st.table(titles_won_summary_output, hide_index=True)
 
             st.subheader("List of Champions", divider="grey")
-            st.dataframe(seasons_top_three_output, hide_index=True)
+            st.table(seasons_top_three_output, hide_index=True)
 
             league_name_starting_the_removed = remove_starting_the(text=league_name)
             st.subheader(f"All time {league_name_starting_the_removed}", divider="grey")
-            st.dataframe(all_time_table_output, hide_index=True)
+            st.table(all_time_table_output, hide_index=True)
 
             st.subheader("Team Summary Statistics", divider="grey")
-            st.dataframe(season_overview_output.T, hide_index=True)
+            st.table(season_overview_output.T, hide_index=True)
 
             if final_gw_finished:
                 season_current_df_output_dash_header = f"Current Season (Completed)"
@@ -136,13 +125,13 @@ def main():
                 )
 
             st.subheader(season_current_df_output_dash_header, divider="grey")
-            st.dataframe(season_current_df_output, hide_index=True)
+            st.table(season_current_df_output, hide_index=True)
 
             season_history_df_output_dash_header = (
                 f"Previous {league_name_starting_the_removed} seasons"
             )
             st.subheader(f"{season_history_df_output_dash_header}", divider="grey")
-            st.dataframe(season_history_df_output, hide_index=True)
+            st.table(season_history_df_output, hide_index=True)
 
     except Exception as e:
         st.error(
