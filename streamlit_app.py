@@ -63,7 +63,7 @@ def main():
 
             # Get data
 
-            with st.spinner():
+            with st.spinner(text="Getting league data..."):
                 (
                     league_data,
                     manager_information,
