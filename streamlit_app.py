@@ -27,6 +27,7 @@ st.markdown(
 
 # Pre Processing
 latest_season_start = get_most_recent_august_start()
+import time
 
 
 def main():
@@ -61,36 +62,38 @@ def main():
             # Call your function with the input numbers
 
             # Get data
-            (
-                league_data,
-                manager_information,
-                team_ids,
-                final_gw_finished,
-                season_history,
-                season_current_df,
-                season_history_df,
-                current_gamekweek,
-                team_data,
-            ) = get_team_and_league_data(league_id=int(league_id))
 
-            (
-                league_name,
-                league_summary_kpis,
-                seasons_top_three_output,
-                titles_won_summary_output,
-                season_overview_output,
-                season_current_df_output,
-                season_history_df_output,
-                all_time_table_output,
-            ) = get_team_and_league_data_filtered_summarised(
-                league_data=league_data,
-                manager_information=manager_information,
-                team_ids=team_ids,
-                season_current_df=season_current_df,
-                season_history_df=season_history_df,
-                season_start_year=season_start_year,
-                team_data=team_data,
-            )
+            with st.spinner():
+                (
+                    league_data,
+                    manager_information,
+                    team_ids,
+                    final_gw_finished,
+                    season_history,
+                    season_current_df,
+                    season_history_df,
+                    current_gamekweek,
+                    team_data,
+                ) = get_team_and_league_data(league_id=int(league_id))
+
+                (
+                    league_name,
+                    league_summary_kpis,
+                    seasons_top_three_output,
+                    titles_won_summary_output,
+                    season_overview_output,
+                    season_current_df_output,
+                    season_history_df_output,
+                    all_time_table_output,
+                ) = get_team_and_league_data_filtered_summarised(
+                    league_data=league_data,
+                    manager_information=manager_information,
+                    team_ids=team_ids,
+                    season_current_df=season_current_df,
+                    season_history_df=season_history_df,
+                    season_start_year=season_start_year,
+                    team_data=team_data,
+                )
 
             league_summary_kpis.reset_index(inplace=True)
             league_summary_kpis.columns = ["", league_name]
