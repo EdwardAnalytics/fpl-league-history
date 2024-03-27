@@ -9,6 +9,7 @@ st.set_page_config(
 from src.app_utility.app_tools import (
     get_most_recent_august_start,
     remove_starting_the,
+    get_league_plot,
 )
 from src.app_utility.create_output_tables import (
     get_team_and_league_data,
@@ -102,20 +103,22 @@ def main():
             league_summary_kpis.columns = ["", league_name]
             # Display the output tables
             st.header(league_name, divider="grey")
-            st.table(data=league_summary_kpis)
+            st.dataframe(data=league_summary_kpis, hide_index=True)
 
             st.subheader("Champions", divider="grey")
-            st.table(titles_won_summary_output)
+            st.dataframe(titles_won_summary_output, hide_index=True)
 
             st.subheader("List of Champions", divider="grey")
-            st.table(seasons_top_three_output)
+            st.markdown("*(number of titles)*")
+            st.dataframe(seasons_top_three_output, hide_index=True)
 
             league_name_starting_the_removed = remove_starting_the(text=league_name)
+
             st.subheader(f"All time {league_name_starting_the_removed}", divider="grey")
-            st.table(all_time_table_output)
+            st.dataframe(all_time_table_output, hide_index=True)
 
             st.subheader("Team Summary Statistics", divider="grey")
-            st.table(season_overview_output.T)
+            st.dataframe(season_overview_output.T, hide_index=True)
 
             if final_gw_finished:
                 season_current_df_output_dash_header = f"Current Season (Completed)"
@@ -125,13 +128,13 @@ def main():
                 )
 
             st.subheader(season_current_df_output_dash_header, divider="grey")
-            st.table(season_current_df_output)
+            st.dataframe(season_current_df_output, hide_index=True)
 
             season_history_df_output_dash_header = (
-                f"Previous {league_name_starting_the_removed} seasons"
+                f"Previous {league_name_starting_the_removed} Seasons"
             )
             st.subheader(f"{season_history_df_output_dash_header}", divider="grey")
-            st.table(season_history_df_output)
+            st.dataframe(season_history_df_output, hide_index=True)
 
     except Exception as e:
         st.error(
@@ -141,3 +144,25 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# dev: new tab for plot
+# season_history_df_output_dash_header = (
+#     f"Previous {league_name_starting_the_removed} Seasons"
+# )
+# st.subheader(f"{season_history_df_output_dash_header}", divider="grey")
+# value_to_plot=st.selectbox(label='Select Value to Plot', options=('Position','Overall Rank'))
+# if value_to_plot == 'Position':
+#     value_to_plot='Pos'
+# else:
+#     pass
+
+# options = st.multiselect(label='Select Teams',
+#                 options=season_current_df_output['Team'].tolist(),
+#                 default=season_current_df_output['Team'].iloc[:5].tolist(),
+#                 max_selections=10
+#                 )
+# st.write('You selected:', options)
+
+# plot_data = get_league_plot(df=season_history_df_output,teams=options,value_to_plot=value_to_plot)
+# #st.line_chart

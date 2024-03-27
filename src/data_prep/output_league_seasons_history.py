@@ -186,15 +186,17 @@ def aggreagte_season_by_position(position, df, column_name):
     df = df[df["league_position"] == position]
     df["Cumulative_Count"] = df.groupby("team_name").cumcount() + 1
 
-    df.loc[:, column_name] = (
-        df["manager_name"]
-        + ": "
-        + df["team_name"]
-        + " ("
-        + df["Cumulative_Count"].astype(str)
-        + ")"
-    )
-    df = df[["season_name", column_name]]
+    df["team_name"] = df["team_name"] + " (" + df["Cumulative_Count"].astype(str) + ")"
+
+    df = df[["season_name", "manager_name", "team_name"]]
+
+    rename_columns = {
+        "season_name": "Season",
+        "manager_name": f"{column_name}: Manager",
+        "team_name": f"{column_name}: Team ",
+        "third_place_with_count": "Third Place",
+    }
+    df = df.rename(columns=rename_columns)
 
     return df
 
@@ -216,28 +218,19 @@ def get_seasons_by_top_three_teams(df):
         A DataFrame summarizing the performance of top three teams across seasons.
 
     """
-    champions = aggreagte_season_by_position(
-        position=1, df=df, column_name="champions_with_count"
-    )
+    champions = aggreagte_season_by_position(position=1, df=df, column_name="Champions")
     runners_up = aggreagte_season_by_position(
-        position=2, df=df, column_name="runners_up_count"
+        position=2, df=df, column_name="Runners-up"
     )
     third_place = aggreagte_season_by_position(
-        position=3, df=df, column_name="third_place_with_count"
+        position=3, df=df, column_name="Third Place"
     )
 
     seasons_top_three = (
-        champions.merge(right=runners_up, on="season_name", how="left")
-        .merge(right=third_place, on="season_name", how="left")
-        .sort_values(by="season_name")
+        champions.merge(right=runners_up, on="Season", how="left")
+        .merge(right=third_place, on="Season", how="left")
+        .sort_values(by="Season")
     )
-    rename_columns = {
-        "season_name": "Season",
-        "champions_with_count": "Champions (number of titles)",
-        "runners_up_count": "Runners-up",
-        "third_place_with_count": "Third Place",
-    }
-    seasons_top_three = seasons_top_three.rename(columns=rename_columns)
 
     # Fill nulls
     seasons_top_three = seasons_top_three.fillna("")
@@ -262,10 +255,10 @@ def get_titles_won_summary(df):
         A DataFrame summarizing the titles won by teams.
 
     """
-    df.loc[:, "team"] = df["manager_name"] + ": " + df["team_name"]
     selected_columns = [
         "rank",
-        "team",
+        "manager_name",
+        "team_name",
         "seasons_won",
         "seasons_runner_up",
         "seasons_won_years",
@@ -276,7 +269,8 @@ def get_titles_won_summary(df):
 
     rename_columns = {
         "rank": "Rank",
-        "team": "Team",
+        "manager_name": "Manager",
+        "team_name": "Team",
         "seasons_won": "Winners",
         "seasons_runner_up": "Runners-up",
         "seasons_won_years": "Winning Seasons",
