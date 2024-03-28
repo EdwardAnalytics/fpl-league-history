@@ -23,9 +23,14 @@ Install requirements (in virtual environment):
 pip install -r requirements.txt
 ```
 
-Run the app:
+Run the Streamlit app:
 ```
-python app.py
+streamlit run streamlit_app.py
+```
+
+Run the Dash app:
+```
+python dash_app.py
 ```
 
 Navigate to local host: http://127.0.0.1:8050/.
