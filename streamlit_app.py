@@ -33,7 +33,6 @@ st.markdown(
 
 # Pre Processing
 latest_season_start = get_most_recent_august_start()
-import time
 
 
 def main():
