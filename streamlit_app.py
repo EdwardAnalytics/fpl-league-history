@@ -13,9 +13,6 @@ from src.app_utility.app_tools import (
     get_most_recent_august_start,
     remove_starting_the,
 )
-from src.app_utility.plots import (
-    get_league_plot_history,
-)
 from src.app_utility.create_output_tables import (
     get_team_and_league_data,
     get_team_and_league_data_filtered_summarised,
