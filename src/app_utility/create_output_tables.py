@@ -52,9 +52,7 @@ def get_team_and_league_data(league_id):
     )
 
     season_history_df = summarise_season_history(
-        season_history=season_history,
-        season_current_df=season_current_df,
-        final_gw_finished=final_gw_finished,
+        season_history=season_history
     )
 
     return (

@@ -76,18 +76,14 @@ def summarise_season_current(
     return season_current_df
 
 
-def summarise_season_history(season_history, season_current_df, final_gw_finished):
+def summarise_season_history(season_history):
     """
-    Summarize the historical season data into a DataFrame, ranking the seasons and appending the current season if finished.
+    Summarize the historical season data into a DataFrame, ranking the seasons.
 
     Parameters
     ----------
     season_history : dict
         Data about previous seasons.
-    season_current_df : pandas.DataFrame
-        Data about the current season.
-    final_gw_finished : bool
-        Indicates whether the final gameweek of the current season has finished.
 
     Returns
     -------
@@ -106,17 +102,6 @@ def summarise_season_history(season_history, season_current_df, final_gw_finishe
     )
 
     season_history_df.sort_values(by=["season_name", "league_position"])
-
-    # Check if final gameweek finished and append current/latest season information
-    # Skipping this step as completed season is automatically added to history
-    # if final_gw_finished:
-    #     season_history_df = pd.concat(
-    #         [season_history_df, season_current_df[season_history_df.columns]],
-    #         axis=0,
-    #         ignore_index=True,
-    #     )
-    # else:
-    #     pass
 
     # Sort output
     season_history_df = season_history_df.sort_values(
