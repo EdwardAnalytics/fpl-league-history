@@ -108,14 +108,15 @@ def summarise_season_history(season_history, season_current_df, final_gw_finishe
     season_history_df.sort_values(by=["season_name", "league_position"])
 
     # Check if final gameweek finished and append current/latest season information
-    if final_gw_finished:
-        season_history_df = pd.concat(
-            [season_history_df, season_current_df[season_history_df.columns]],
-            axis=0,
-            ignore_index=True,
-        )
-    else:
-        pass
+    # Skipping this step as completed season is automatically added to history
+    # if final_gw_finished:
+    #     season_history_df = pd.concat(
+    #         [season_history_df, season_current_df[season_history_df.columns]],
+    #         axis=0,
+    #         ignore_index=True,
+    #     )
+    # else:
+    #     pass
 
     # Sort output
     season_history_df = season_history_df.sort_values(
