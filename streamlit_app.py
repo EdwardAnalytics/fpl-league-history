@@ -188,9 +188,7 @@ def main():
             league_name_starting_the_removed = remove_starting_the(text=league_name)
 
             # All time table
-            st.subheader(
-                f"All Time {league_name_starting_the_removed} Table", divider="grey"
-            )
+            st.subheader(f"All time {league_name_starting_the_removed}", divider="grey")
             st.dataframe(all_time_table_output, hide_index=True)
 
             # Team summary statistics
@@ -205,11 +203,8 @@ def main():
                     f"Current Season (GW {current_gamekweek})"
                 )
 
-            if current_gamekweek == "Season Not Started":
-                pass
-            else:
-                st.subheader(season_current_df_output_dash_header, divider="grey")
-                st.dataframe(season_current_df_output, hide_index=True)
+            st.subheader(season_current_df_output_dash_header, divider="grey")
+            st.dataframe(season_current_df_output, hide_index=True)
 
             # Season history
             season_history_df_output_dash_header = (
@@ -573,8 +568,7 @@ def main():
 
     except Exception as e:
         st.error(
-            """:lion_face: Unable to get league data. Number of teams in league must not exceed 500. League ID is a number located in the league URL: `https://fantasy.premierleague.com/leagues/XXXXXX/standings/c`
-            """
+            """:lion_face: Unable to get league data. League ID is a number located in the league URL: `https://fantasy.premierleague.com/leagues/XXXXXX/standings/c`"""
         )
 
 

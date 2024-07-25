@@ -51,7 +51,9 @@ def get_team_and_league_data(league_id):
         team_ids=team_ids,
     )
 
-    season_history_df = summarise_season_history(season_history=season_history)
+    season_history_df = summarise_season_history(
+        season_history=season_history
+    )
 
     return (
         league_data,

@@ -25,11 +25,8 @@ def reformat_season_current(df):
     }
     df = df.rename(columns=rename_columns)
 
-    # Replace rank with 0 if season has not started
-    df["Overall Rank"] = df["Overall Rank"].fillna(0)
-
-    # df["Total Points"] = df["Total Points"].map("{:,.0f}".format)
-    # df["Overall Rank"] = df["Overall Rank"].map("{:,.0f}".format)
+    df["Total Points"] = df["Total Points"].map("{:,.0f}".format)
+    df["Overall Rank"] = df["Overall Rank"].map("{:,.0f}".format)
 
     # Re order columns
     df = df[list(rename_columns.values())]

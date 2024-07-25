@@ -98,58 +98,24 @@ def get_league_urls(league_id):
     urls : list
         A list of URLs for fetching league standings data.
     """
-    # Check if season has started:
-    final_gw_finished, current_season_year, team_ids, current_gamekweek = (
-        get_current_season_information()
-    )
+    # Loop through each page
+    urls = []
+    page = 1
+    url = f"https://fantasy.premierleague.com/api/leagues-classic/{league_id}/standings/?page_standings={page}"
+    urls.append(url)
 
-    if current_gamekweek != "Season Not Started":
-        # Loop through each page
-        urls = []
-        page = 1
+    league_data = requests.get(url)
+    league_data = league_data.json()
+
+    while league_data["standings"]["has_next"] == True:
+        page += 1
+
         url = f"https://fantasy.premierleague.com/api/leagues-classic/{league_id}/standings/?page_standings={page}"
-        urls.append(url)
 
         league_data = requests.get(url)
         league_data = league_data.json()
 
-        while league_data["standings"]["has_next"] == True:
-            page += 1
-
-            if page > 10:
-                # Raise an exception with a custom error message
-                raise ValueError(f"League too large")
-
-            url = f"https://fantasy.premierleague.com/api/leagues-classic/{league_id}/standings/?page_standings={page}"
-
-            league_data = requests.get(url)
-            league_data = league_data.json()
-
-            urls.append(url)
-    else:
-        # Add new entries
-        # Loop through each page
-        urls = []
-        page = 1
-        url = f"https://fantasy.premierleague.com/api/leagues-classic/{league_id}/standings/?page_new_entries={page}"
         urls.append(url)
-
-        league_data = requests.get(url)
-        league_data = league_data.json()
-
-        while league_data["new_entries"]["has_next"] == True:
-            page += 1
-
-            if page > 10:
-                # Raise an exception with a custom error message
-                raise ValueError(f"League too large")
-
-            url = f"https://fantasy.premierleague.com/api/leagues-classic/{league_id}/standings/?page_new_entries={page}"
-
-            league_data = requests.get(url)
-            league_data = league_data.json()
-
-            urls.append(url)
 
     return urls
 
@@ -177,17 +143,6 @@ def get_league_data(league_id):
     for item in all_results:
         if "standings" in item and "results" in item["standings"]:
             team_data.extend(item["standings"]["results"])
-
-        if "new_entries" in item and "results" in item["new_entries"]:
-            team_data.extend(item["new_entries"]["results"])
-
-    # Rename keys for consistency
-    for team in team_data:
-        # Check if both 'player_first_name' and 'player_last_name' keys exist
-        if "player_first_name" in team and "player_last_name" in team:
-            team["player_name"] = (
-                team.pop("player_first_name") + " " + team.pop("player_last_name")
-            )
 
     league_data = all_results[0]
     return league_data, team_data
@@ -360,7 +315,7 @@ def get_current_season_information():
         if event["is_current"] == True:
             current_gamekweek = event["id"]
         else:
-            current_gamekweek = "Season Not Started"
+            pass
 
     year_start = bootstrap_data["events"][0]["deadline_time"][0:4]
     current_season_year = f"{year_start}/{str(int(year_start) + 1)[2:4]}"
