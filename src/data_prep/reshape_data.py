@@ -41,7 +41,7 @@ def summarise_season_current(
     )
 
     # Replace NaN with '-' for managers who have not specified a favourite team
-    season_current_df['name'] = season_current_df['name'].fillna('-')
+    season_current_df["name"] = season_current_df["name"].fillna("-")
 
     # Match current and previous season schemas
     season_current_df["season_name"] = current_season_year
@@ -71,7 +71,6 @@ def summarise_season_current(
     for column in required_columns:
         if column not in season_current_df.columns:
             season_current_df[column] = 0
-
 
     columns_to_output = [
         "season_name",

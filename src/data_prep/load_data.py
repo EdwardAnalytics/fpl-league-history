@@ -2,6 +2,9 @@ import requests
 import concurrent.futures
 import pandas as pd
 
+# Set page limit
+page_limit = 10
+
 
 def fetch_url(url):
     """
@@ -84,7 +87,6 @@ def fetch_urls_concurrently_with_url(urls):
     return results
 
 
-
 def get_current_season_information():
     """
     Checks if the current season is complete.
@@ -150,7 +152,7 @@ def get_league_data_season_started(league_id):
     while league_data["standings"]["has_next"] == True:
         page += 1
 
-        if page > 10:
+        if page > page_limit:
             break
 
         url = f"https://fantasy.premierleague.com/api/leagues-classic/{league_id}/standings/?page_standings={page}"
@@ -193,7 +195,7 @@ def get_league_data_season_not_started(league_id):
     while league_data["new_entries"]["has_next"] == True:
         page += 1
 
-        if page > 10:
+        if page > page_limit:
             break
 
         url = f"https://fantasy.premierleague.com/api/leagues-classic/{league_id}/standings/?page_new_entries={page}"
@@ -207,7 +209,9 @@ def get_league_data_season_not_started(league_id):
             team_data.extend(item["new_entries"]["results"])
 
     for team in team_data:
-        team["player_name"] = f"{team.pop('player_first_name')} {team.pop('player_last_name')}"
+        team["player_name"] = (
+            f"{team.pop('player_first_name')} {team.pop('player_last_name')}"
+        )
 
     return all_results[0], team_data
 
@@ -228,13 +232,14 @@ def get_league_data(league_id):
     team_data : list
         Team data extracted from all fetched URLs.
     """
-    final_gw_finished, current_season_year, team_ids, current_gamekweek = get_current_season_information()
+    final_gw_finished, current_season_year, team_ids, current_gamekweek = (
+        get_current_season_information()
+    )
 
     if current_gamekweek != "Season Not Started":
         return get_league_data_season_started(league_id)
     else:
         return get_league_data_season_not_started(league_id)
-
 
 
 def get_league_urls(league_id):
