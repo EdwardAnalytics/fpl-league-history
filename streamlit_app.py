@@ -40,7 +40,7 @@ def main():
         st.title("FPL League History")
 
         # Add github link and logo
-        LOGO_IMAGE = "assets\pwt.png"
+        LOGO_IMAGE = "assets\\pwt.png"
 
         st.markdown(
             """
@@ -69,7 +69,7 @@ def main():
         st.markdown(
             f"""
             <div class="container">
-                <img class="logo-img" src="data:assets\pwt.png;base64,{base64.b64encode(open(LOGO_IMAGE, "rb").read()).decode()}">
+                <img class="logo-img" src="data:assets\\pwt.png;base64,{base64.b64encode(open(LOGO_IMAGE, "rb").read()).decode()}">
                 <p class="logo-text"><a href="https://github.com/edward-farragher/ff-league-history">GitHub Repo</a></p>
             </div>
             """,
