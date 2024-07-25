@@ -376,9 +376,6 @@ def reformat_season_history(df):
     }
     df = df.rename(columns=rename_columns)
 
-    df["Total Points"] = df["Total Points"].map("{:,.0f}".format)
-    df["Overall Rank"] = df["Overall Rank"].map("{:,.0f}".format)
-
     # Re order columns
     df = df[list(rename_columns.values())]
 
@@ -425,15 +422,5 @@ def get_all_time_table(df):
     ]
 
     all_time_table = all_time_table.sort_values(by="Total Points", ascending=False)
-
-    all_time_table["Total Points"] = all_time_table["Total Points"].map(
-        "{:,.0f}".format
-    )
-    all_time_table["Average Points"] = all_time_table["Average Points"].map(
-        "{:,.0f}".format
-    )
-    all_time_table["Average Rank"] = all_time_table["Average Rank"].map(
-        "{:,.0f}".format
-    )
 
     return all_time_table

@@ -51,6 +51,7 @@ def summarise_season_current(
         "player_name": "manager_name",
         "rank": "league_position",
         "id_x": "team_id",
+        "entry": "team_id",
     }
     season_current_df = season_current_df.rename(columns=rename_columns)
 
@@ -61,6 +62,16 @@ def summarise_season_current(
         "name": "favourite_team_name",
     }
     season_current_df = season_current_df.rename(columns=rename_columns)
+
+    # Pre season check:
+    # List of required columns
+    required_columns = ["total_points", "rank", "league_position"]
+
+    # Check and create columns with 0s if they don't exist
+    for column in required_columns:
+        if column not in season_current_df.columns:
+            season_current_df[column] = 0
+
 
     columns_to_output = [
         "season_name",

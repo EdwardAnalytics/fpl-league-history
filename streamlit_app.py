@@ -203,8 +203,9 @@ def main():
                     f"Current Season (GW {current_gamekweek})"
                 )
 
-            st.subheader(season_current_df_output_dash_header, divider="grey")
-            st.dataframe(season_current_df_output, hide_index=True)
+            if current_gamekweek != "Season Not Started":
+                st.subheader(season_current_df_output_dash_header, divider="grey")
+                st.dataframe(season_current_df_output, hide_index=True)
 
             # Season history
             season_history_df_output_dash_header = (
