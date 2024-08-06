@@ -538,10 +538,6 @@ def main():
                 st.altair_chart(chart_position)
 
                 # Plot Team Overall Rank by Season
-                # Change comma seperated columns to integers
-                plot_data["Overall Rank"] = pd.to_numeric(
-                    plot_data["Overall Rank"].str.replace(",", ""), errors="coerce"
-                )
                 max_rank = plot_data["Overall Rank"].max()
 
                 title = alt.TitleParams("Team Overall Rank by Season", anchor="middle")
