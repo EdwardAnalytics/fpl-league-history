@@ -423,9 +423,11 @@ def get_all_time_table(df):
 
     all_time_table = all_time_table.sort_values(by="Total Points", ascending=False)
 
-    # Round average points to  no decimal places
+    # Round average points and rank to  no decimal places
     all_time_table["Average Points"] = (
         all_time_table["Average Points"].round(0).astype(int)
     )
+
+    all_time_table["Average Rank"] = all_time_table["Average Rank"].round(0).astype(int)
 
     return all_time_table
