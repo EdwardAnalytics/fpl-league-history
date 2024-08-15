@@ -14,7 +14,7 @@ Python Version: 3.11.7
 
 Clone this repo:
 ```
-git clone https://github.com/edward-farragher/ff-league-history
+git clone https://github.com/edward-farragher/fpl-league-history
 cd ff-complementing-fixtures
 ```
 
