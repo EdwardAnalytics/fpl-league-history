@@ -116,7 +116,7 @@ github_link = html.I(
                 style={"text-align": "right", "font-size": "smaller"},
                 children=[
                     html.A(
-                        href="https://github.com/edward-farragher/ff-league-history",
+                        href="https://github.com/edward-farragher/fpl-league-history",
                         children="Link to GitHub repo.",
                     )
                 ],
