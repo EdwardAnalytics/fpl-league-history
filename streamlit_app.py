@@ -70,7 +70,7 @@ def main():
             f"""
             <div class="container">
                 <img class="logo-img" src="data:assets//pwt.png;base64,{base64.b64encode(open(LOGO_IMAGE, "rb").read()).decode()}">
-                <p class="logo-text"><a href="https://github.com/edward-farragher/ff-league-history">GitHub Repo</a></p>
+                <p class="logo-text"><a href="https://github.com/edward-farragher/fpl-league-history">GitHub Repo</a></p>
             </div>
             """,
             unsafe_allow_html=True,
