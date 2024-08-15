@@ -37,4 +37,9 @@ Navigate to local host: http://127.0.0.1:8050/.
 
 
 ## Dashboard Preview
-![](assets/dashboard_preview.png)
+
+### Streamlit
+![](assets/dashboard_preview_streamlit.png)
+
+### Dash
+![](assets/dashboard_preview_dash.png)
