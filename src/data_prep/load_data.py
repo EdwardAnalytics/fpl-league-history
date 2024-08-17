@@ -114,6 +114,7 @@ def get_current_season_information():
     for event in bootstrap_data["events"]:
         if event["is_current"] == True:
             current_gamekweek = event["id"]
+            break  # Exit the loop when the current gameweek is found
         else:
             current_gamekweek = "Season Not Started"
 
