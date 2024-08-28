@@ -12,16 +12,7 @@ https://fpl-league-history.streamlit.app/
 ### Local Instructions
 Python Version: 3.11.7
 
-Clone this repo:
-```
-git clone https://github.com/edward-farragher/fpl-league-history.git
-cd ff-complementing-fixtures
-```
-
-Install requirements (in virtual environment):
-```
-pip install -r requirements.txt
-```
+Clone this repo and install requirements (in virtual environment)
 
 Run the Streamlit app:
 ```
