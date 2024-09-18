@@ -1,9 +1,12 @@
 import requests
 import concurrent.futures
 import pandas as pd
+from src.app_utility.yaml_loader import load_yaml_file
 
 # Set page limit
-page_limit = 10
+yaml_file_path = "conf/parameters.yaml"
+parameters = load_yaml_file(yaml_file_path)
+page_limit = parameters["page_limit"]
 
 
 def fetch_url(url):
