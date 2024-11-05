@@ -139,15 +139,6 @@ def main():
             # Display the output tables
             st.header(league_name, divider="grey")
 
-            # Convert DataFrame to CSV
-            csv = season_history_df_output.to_csv(index=False).encode("utf-8")
-            st.download_button(
-                label="Download League Standings by Season as CSV",
-                data=csv,
-                file_name="FPL Leage History.csv",
-                mime="text/csv",
-            )
-
             # Summary KPIs
             st.dataframe(data=league_summary_kpis, hide_index=True)
 
@@ -223,6 +214,15 @@ def main():
             st.subheader(f"{season_history_df_output_dash_header}", divider="grey")
             data_history, chart_history = st.tabs(["📃Data", "📈 Chart"])
             with data_history:
+
+                # Convert DataFrame to CSV
+                csv = season_history_df_output.to_csv(index=False).encode("utf-8")
+                st.download_button(
+                    label="Download League Standings by Season as CSV",
+                    data=csv,
+                    file_name="FPL Leage History.csv",
+                    mime="text/csv",
+                )
                 # Get past league seasons, with a seperate table for each season
                 filtered_df_00 = season_history_df_output[
                     season_history_df_output["Season"] == "2000/01"
