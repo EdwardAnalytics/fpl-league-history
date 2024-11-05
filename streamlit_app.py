@@ -139,6 +139,15 @@ def main():
             # Display the output tables
             st.header(league_name, divider="grey")
 
+            # Convert DataFrame to CSV
+            csv = season_history_df_output.to_csv(index=False).encode("utf-8")
+            st.download_button(
+                label="Download League Standings by Season as CSV",
+                data=csv,
+                file_name="FPL Leage History.csv",
+                mime="text/csv",
+            )
+
             # Summary KPIs
             st.dataframe(data=league_summary_kpis, hide_index=True)
 
